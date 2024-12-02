@@ -22,8 +22,11 @@ public class UserPostEntity extends BaseTimeEntity {
 	@Column(name = "user_post_id")
 	private Long id;
 
-	@Column(name = "seasoning_category_id", nullable = false, columnDefinition = "TINYINT")
-	private int seasoningCategoryId;
+	// user_post가 Many, category가 One이며 양방향 맛보기로 가보기
+	// 양방향의 경우 외래키를 가진 이 엔티티가 연관관계의 주인이다.
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "seasoning_category_id")
+	private SeasoningCategoryEntity seasoningCategoryEntity;
 
 	// 포스트 작성자 uuid
 	@Column(name = "writer_uuid", nullable = false, columnDefinition = "BINARY(16)")
