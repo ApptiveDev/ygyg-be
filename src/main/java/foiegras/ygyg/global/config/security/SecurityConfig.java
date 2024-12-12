@@ -63,7 +63,7 @@ public class SecurityConfig {
 
 	// user
 	private static final RequestMatcher[] userUrl = new RequestMatcher[] {
-		new AntPathRequestMatcher("/api/v1/user/duplicate-check/nickname", GET),   // 닉네임 중복 검사
+		new AntPathRequestMatcher("/api/v1/user/duplicate-check/nickname/**", GET),   // 닉네임 중복 검사
 	};
 
 	// post
