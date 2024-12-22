@@ -45,19 +45,18 @@ public enum BaseResponseStatus {
 	NO_PRIVACY_SETTINGS(HttpStatus.INTERNAL_SERVER_ERROR, false, 2008, "개인정보 설정이 존재하지 않습니다. 서버 관리자에게 문의해주세요"),
 	WRONG_AUTH_EMAIL(HttpStatus.BAD_REQUEST, false, 2009, "요청 이메일이 일치하지 않습니다"),
 	NOT_FOLLOW_SELF(HttpStatus.BAD_REQUEST, false, 2010, "본인을 팔로우할 수 없습니다"),
+	NOT_EXIST_ROUTE(HttpStatus.BAD_REQUEST, false, 2011, "존재하지 않는 방문 경로입니다."),
 
 	/**
 	 * 3000: post service error
 	 */
 	NO_EXIST_POST(HttpStatus.NOT_FOUND, false, 3001, "존재하지 않는 글입니다"),
 
-
 	/**
 	 * 4000: comment service error
 	 */
 	NO_EXIST_COMMENT(HttpStatus.NOT_FOUND, false, 4001, "존재하지 않는 댓글입니다"),
 	NO_DELETE_COMMENT_AUTHORITY(HttpStatus.BAD_REQUEST, false, 4002, "댓글 삭제 권한이 없습니다"),
-
 
 	;
 
