@@ -55,7 +55,7 @@ public class SecurityConfig {
 
 	// auth
 	private static final String[] authUrl = new String[] {
-		"/api/v1/user/signup",         // 회원가입
+		"/api/v1/auth/signup",         // 회원가입
 		"/api/v1/user/signin",         // 로그인
 		"/api/v1/user/password/reset",          // 유저 비밀번호 재설정
 		"/error"                                // 에러 페이지
