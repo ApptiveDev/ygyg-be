@@ -38,4 +38,16 @@ public class UserEntity extends BaseTimeEntity {
 	@Builder.Default
 	private UserRole userRole = UserRole.USER;
 
+
+	// 생성자
+	public static UserEntity createNewUser(UUID userUuid, String userEmail, String userPassword, String userNickname) {
+		return UserEntity.builder()
+			.userUuid(userUuid)
+			.userEmail(userEmail)
+			.userPassword(userPassword)
+			.userNickname(userNickname)
+			.userRole(UserRole.USER)
+			.build();
+	}
+
 }
