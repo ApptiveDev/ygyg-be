@@ -1,4 +1,4 @@
-package foiegras.ygyg.user.application.dto.in;
+package foiegras.ygyg.user.application.dto.out;
 
 
 import lombok.AllArgsConstructor;
@@ -13,12 +13,10 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserInDto {
+public class SignInOutDto {
 
 	private UUID userUuid;
-	private String userSignInId;
-	private String userEmail;
-	private String userPassword;
 	private String userNickname;
+	private String accessToken;
 
 }
