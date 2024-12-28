@@ -23,7 +23,7 @@ public class UserPostEntity extends BaseTimeEntity {
 	private Long id;
 
 	// user_post가 Many, category가 One이며 양방향 맛보기로 가보기
-	// 양방향의 경우 외래키를 가진 이 엔티티가 연관관계의 주인이다.
+	// 양방향의 경우 외래키를 가진 이 엔티티가 연관관계의 주인이다. 보통 다대일에서 다가 fk를 가짐
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "seasoning_category_id")
 	private SeasoningCategoryEntity seasoningCategoryEntity;
