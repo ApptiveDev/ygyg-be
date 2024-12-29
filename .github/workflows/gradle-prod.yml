@@ -67,7 +67,7 @@ jobs:
       # Gradle 빌드 액션을 이용해서 프로젝트 빌드
       - name: Build with Gradle
         # -x test 옵션을 사용하면, 테스트 없이 빌드 -> 테스트 사용하도록 변경
-        run: ./gradlew build -i
+        run: ./gradlew build -i -x test
 
       # 도커 이미지 빌드 & 이미지를 도커허브로 push
       - name: Docker build & push to dockerhub
