@@ -1,4 +1,4 @@
-package foiegras.ygyg.user.application.dto.in;
+package foiegras.ygyg.user.application.dto.out;
 
 
 import lombok.AllArgsConstructor;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignInInDto {
+public class VerifyAuthCodeOutDto {
 
-	private String userEmail;
-	private String userPassword;
+	private Boolean isVerified;
 
 }

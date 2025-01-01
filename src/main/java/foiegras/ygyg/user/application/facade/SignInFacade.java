@@ -31,7 +31,7 @@ public class SignInFacade {
 	// 1. 로그인
 	public SignInOutDto signIn(SignInInDto inDto) {
 		// user 조회
-		UserEntity user = userService.findBySignInId(inDto.getUserSignInId());
+		UserEntity user = userService.findByUserEmail(inDto.getUserEmail());
 		// user, pw로 인증 진행
 		authService.authenticate(user, inDto.getUserPassword());
 		// 인증에 성공했다면 토큰 생성
