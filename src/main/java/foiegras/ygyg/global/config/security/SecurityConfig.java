@@ -50,7 +50,7 @@ public class SecurityConfig {
 	private static final RequestMatcher[] emailUrl = new RequestMatcher[] {
 		new AntPathRequestMatcher("/api/v1/email/duplicate-check", GET),   // 이메일 중복 검사
 		new AntPathRequestMatcher("/api/v1/email/auth", POST),             // 인증 이메일 전송
-		new AntPathRequestMatcher("/api/v1/user/verify/email", GET),            // 이메일 인증 코드 확인
+		new AntPathRequestMatcher("/api/v1/email/verify/auth-code", GET),            // 이메일 인증 코드 확인
 	};
 
 	// auth
