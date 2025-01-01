@@ -3,6 +3,7 @@ package foiegras.ygyg.post.infrastructure.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 
 @Entity
@@ -15,7 +16,7 @@ public class PostEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "post_detail_id")
+	@Column(name = "post_entity_id")
 	private Long id;
 
 	// userPostId(FK)가 이 엔티티에 있어야 user_post_id로 post entity 객체를 찾을 수 있다
@@ -29,8 +30,8 @@ public class PostEntity {
 	private ItemPortioningUnit itemPortioningUnit;
 
 	//url 최대길이로 길이지정
-	@Column(name = "online_url", nullable = true, length = 2083)
-	private String onlineUrl;
+	@Column(name = "online_purchase_url", nullable = true, columnDefinition = "TEXT")
+	private String onlinePurchaseUrl;
 
 	@Column(name = "original_price", nullable = false)
 	private Integer originalPrice;
@@ -45,8 +46,10 @@ public class PostEntity {
 	private Integer maxEngageCount;
 
 	// 게시자 포함이므로 초기값 1
+	// 엔티티 변수 직접 초기화는 스키마 생성 DDL에 영향없으니 ColumnDefault나 다른 방식으로 초기화해야함
 	@Column(name = "current_engage_count", nullable = false, columnDefinition = "TINYINT")
-	private Integer currentEngageCount = 1;
+	@ColumnDefault("1")
+	private Integer currentEngageCount;
 
 	@Column(name = "portioning_place_latitude", nullable = false)
 	private Double portioningPlaceLatitude;
