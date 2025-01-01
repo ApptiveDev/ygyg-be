@@ -38,7 +38,7 @@ public class AuthService {
 
 	// 1. 유저 생성
 	public UserEntity createUser(CreateUserInDto inDto) {
-		UserEntity newUser = UserEntity.createNewUser(inDto.getUserUuid(), inDto.getUserSignInId(), inDto.getUserEmail(), inDto.getUserPassword(), inDto.getUserNickname());
+		UserEntity newUser = UserEntity.createNewUser(inDto.getUserUuid(), inDto.getUserEmail(), inDto.getUserPassword(), inDto.getUserNickname());
 		return userJpaRepository.save(newUser);
 	}
 
