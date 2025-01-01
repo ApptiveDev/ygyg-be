@@ -23,6 +23,11 @@ public class PostEntity {
 	@JoinColumn(name = "user_post_id")
 	private UserPostEntity userPostEntity;
 
+	// 상품소분단위 테이블과 다대일 매핑
+	@ManyToOne
+	@JoinColumn(name = "item_portining_unit_id")
+	private ItemPortioningUnit itemPortioningUnit;
+
 	//url 최대길이로 길이지정
 	@Column(name = "online_url", nullable = true, length = 2083)
 	private String onlineUrl;
