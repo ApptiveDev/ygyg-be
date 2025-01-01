@@ -25,9 +25,6 @@ public class UserEntity extends BaseTimeEntity {
 	@Column(name = "user_uuid", nullable = false, columnDefinition = "BINARY(16)")
 	private UUID userUuid;
 
-	@Column(name = "user_sign_in_id", length = 100, nullable = false)
-	private String userSignInId;
-
 	@Column(name = "user_email", length = 100, nullable = false)
 	private String userEmail;
 
@@ -43,10 +40,9 @@ public class UserEntity extends BaseTimeEntity {
 
 
 	// 생성자
-	public static UserEntity createNewUser(UUID userUuid, String userSignInId, String userEmail, String userPassword, String userNickname) {
+	public static UserEntity createNewUser(UUID userUuid, String userEmail, String userPassword, String userNickname) {
 		return UserEntity.builder()
 			.userUuid(userUuid)
-			.userSignInId(userSignInId)
 			.userEmail(userEmail)
 			.userPassword(userPassword)
 			.userNickname(userNickname)

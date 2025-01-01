@@ -26,7 +26,7 @@ public class UserService {
 	/**
 	 * UserService
 	 * 1. 닉네임 중복 확인
-	 * 2. 로그인 Id로 유저 조회
+	 * 2. 이메일로 유저 조회
 	 */
 
 	// 1. 닉네임 중복 확인
@@ -37,8 +37,8 @@ public class UserService {
 
 
 	// 2. 로그인 Id로 유저 조회
-	public UserEntity findBySignInId(String userSignInId) {
-		return userJpaRepository.findByUserSignInId(userSignInId)
+	public UserEntity findByUserEmail(String userEmail) {
+		return userJpaRepository.findByUserEmail(userEmail)
 			.orElseThrow(() -> new BaseException(BaseResponseStatus.FAILED_TO_LOGIN));
 	}
 

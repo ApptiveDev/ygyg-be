@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 public class SignUpInDto {
 
 	private String userEmail;
-	private String userSignInId;
 	private String userPassword;
 	private String userNickname;
 	private Integer routeId;
