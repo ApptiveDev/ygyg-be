@@ -54,11 +54,10 @@ public class SecurityConfig {
 	};
 
 	// auth
-	private static final String[] authUrl = new String[] {
-		"/api/v1/auth/signup",         // 회원가입
-		"/api/v1/auth/signin",         // 로그인
-		"/api/v1/user/password/reset",          // 유저 비밀번호 재설정
-		"/error"                                // 에러 페이지
+	private static final RequestMatcher[] authUrl = new RequestMatcher[] {
+		new AntPathRequestMatcher("/api/v1/auth/signup", POST),         // 회원가입
+		new AntPathRequestMatcher("/api/v1/auth/signin", POST),         // 로그인
+		new AntPathRequestMatcher("/api/v1/user/password/reset", PUT)          // 유저 비밀번호 재설정
 	};
 
 	// user
@@ -93,6 +92,7 @@ public class SecurityConfig {
 				// 예비 요청을 허용
 				.requestMatchers(org.springframework.web.cors.CorsUtils::isPreFlightRequest).permitAll()
 				// 로그인 없이 허용할 url
+				.requestMatchers("/error").permitAll()
 				.requestMatchers(userUrl).permitAll()
 				.requestMatchers(authUrl).permitAll()
 				.requestMatchers(emailUrl).permitAll()
