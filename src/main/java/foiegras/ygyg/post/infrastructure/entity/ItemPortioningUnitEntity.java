@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "item_portioning_unit")
-public class ItemPortioningUnit {
+public class ItemPortioningUnitEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +20,5 @@ public class ItemPortioningUnit {
 
 	@Column(name = "unit", length = 2)
 	private String unit;
-	
+
 }

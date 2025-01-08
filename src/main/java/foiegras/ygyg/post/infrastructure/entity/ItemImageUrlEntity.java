@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "item_image_url")
-public class ItemImageUrl {
+public class ItemImageUrlEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
