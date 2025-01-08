@@ -16,7 +16,7 @@ public class PostEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "post_entity_id")
+	@Column(name = "post_id")
 	private Long id;
 
 	// userPostId(FK)가 이 엔티티에 있어야 user_post_id로 post entity 객체를 찾을 수 있다
@@ -27,7 +27,7 @@ public class PostEntity {
 	// 상품소분단위 테이블과 다대일 매핑
 	@ManyToOne
 	@JoinColumn(name = "item_portining_unit_id")
-	private ItemPortioningUnit itemPortioningUnit;
+	private ItemPortioningUnitEntity itemPortioningUnitEntity;
 
 	//url 최대길이로 길이지정
 	@Column(name = "online_purchase_url", nullable = true, columnDefinition = "TEXT")
