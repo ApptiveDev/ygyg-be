@@ -44,7 +44,7 @@ public class UserPostEntity extends BaseTimeEntity {
 	// 남은 인원 적은 수 순 정렬에 쓰임, 작성자 상시 포함이라 1명으로 초기화
 	// db에 넣을 때는 "--최대참여인원" 으로 넣어야 함 for 게시자 1명 기본 카운트
 	@Column(name = "remain_count", nullable = false, columnDefinition = "TINYINT")
-	private Integer remain_count;
+	private Integer remainCount;
 
 	// 필터링 -> 최소 참여 달성된 글만 보기
 	// 추후 TODO : 소분 참여 시 다음 조건 때 True로 변경해야함 => if( isFullMinimum == FALSE && 현재인원 >= 최소참여인원 )
