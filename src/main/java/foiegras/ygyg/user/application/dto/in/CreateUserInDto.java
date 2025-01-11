@@ -16,6 +16,7 @@ import java.util.UUID;
 public class CreateUserInDto {
 
 	private UUID userUuid;
+	private String userName;
 	private String userEmail;
 	private String userPassword;
 	private String userNickname;

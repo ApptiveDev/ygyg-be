@@ -25,6 +25,9 @@ public class UserEntity extends BaseTimeEntity {
 	@Column(name = "user_uuid", nullable = false, columnDefinition = "BINARY(16)")
 	private UUID userUuid;
 
+	@Column(name = "user_name", length = 100, nullable = false)
+	private String userName;
+
 	@Column(name = "user_email", length = 100, nullable = false)
 	private String userEmail;
 
