@@ -4,6 +4,7 @@ package foiegras.ygyg.post.api.controller;
 import foiegras.ygyg.global.common.response.BaseResponse;
 import foiegras.ygyg.post.api.request.CreatePostRequest;
 import foiegras.ygyg.post.application.dto.in.CreatePostInDto;
+import foiegras.ygyg.post.application.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class PostController {
 
 	//services
 	private final ModelMapper modelMapper;
+	private final PostService postService;
 
 
 	/**
@@ -37,6 +39,7 @@ public class PostController {
 	public BaseResponse<Void> createPost(@Valid @RequestBody CreatePostRequest request) {
 
 		CreatePostInDto indto = modelMapper.map(request, CreatePostInDto.class);
+		postService.createPost(indto);
 
 		return new BaseResponse<>();
 	}
