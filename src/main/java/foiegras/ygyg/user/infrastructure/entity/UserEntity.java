@@ -43,9 +43,10 @@ public class UserEntity extends BaseTimeEntity {
 
 
 	// 생성자
-	public static UserEntity createNewUser(UUID userUuid, String userEmail, String userPassword, String userNickname) {
+	public static UserEntity createNewUser(UUID userUuid, String userName, String userEmail, String userPassword, String userNickname) {
 		return UserEntity.builder()
 			.userUuid(userUuid)
+			.userName(userName)
 			.userEmail(userEmail)
 			.userPassword(userPassword)
 			.userNickname(userNickname)

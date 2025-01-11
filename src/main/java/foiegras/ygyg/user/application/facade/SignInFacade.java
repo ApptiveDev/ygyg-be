@@ -41,6 +41,8 @@ public class SignInFacade {
 			.userUuid(user.getUserUuid())
 			.userNickname(user.getUserNickname())
 			.accessToken(accessToken)
+			.userName(user.getUserName())
+			.userEmail(user.getUserEmail())
 			.build();
 	}
 

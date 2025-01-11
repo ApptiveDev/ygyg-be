@@ -12,5 +12,7 @@ public class SignInResponse {
 	private UUID userUuid;
 	private String userNickname;
 	private String accessToken;
+	private String userName;
+	private String userEmail;
 
 }
