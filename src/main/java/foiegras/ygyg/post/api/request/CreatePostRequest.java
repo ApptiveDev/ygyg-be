@@ -1,9 +1,18 @@
 package foiegras.ygyg.post.api.request;
 
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class CreatePostRequest {
 
 	@NotNull
@@ -21,15 +30,13 @@ public class CreatePostRequest {
 
 	@NotNull
 	@Positive
-	private String originalPrice;
+	private Integer originalPrice;
 
 	@NotNull
 	@Positive
-	private String amount;
+	private Integer amount;
 
 	@NotNull
-	@Min(value = 2, message = "최소 소분인원은 2명 이상이어야 합니다")
-	@Max(value = 10, message = "최대 소분인원은 10명 이하여야 합니다")
 	private Integer minEngageCount;
 
 	@NotNull
@@ -39,10 +46,10 @@ public class CreatePostRequest {
 	private Integer currentEngageCount;
 
 	@NotNull
-	private String portioningPlaceLatitude;
+	private Double portioningPlaceLatitude;
 
 	@NotNull
-	private String portioningPlaceLongitude;
+	private Double portioningPlaceLongitude;
 
 	@NotNull
 	private String description;
