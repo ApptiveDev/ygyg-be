@@ -6,9 +6,11 @@ import foiegras.ygyg.post.api.request.CreatePostRequest;
 import foiegras.ygyg.post.application.dto.in.CreatePostInDto;
 import foiegras.ygyg.post.application.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("api/v1/board")
+@RequestMapping("api/v1/post")
 @RequiredArgsConstructor
+@Validated
 public class PostController {
 
-	//services
+	//utils
 	private final ModelMapper modelMapper;
+
+	//services
 	private final PostService postService;
 
 
@@ -36,11 +41,10 @@ public class PostController {
 	// 1. 소분글 게시
 	@Operation(summary = "소분글 생성", description = "소분글 생성", tags = { "Post" })
 	@PostMapping()
+	@SecurityRequirement(name = "Bearer Auth")
 	public BaseResponse<Void> createPost(@Valid @RequestBody CreatePostRequest request) {
-
 		CreatePostInDto indto = modelMapper.map(request, CreatePostInDto.class);
 		postService.createPost(indto);
-
 		return new BaseResponse<>();
 	}
 

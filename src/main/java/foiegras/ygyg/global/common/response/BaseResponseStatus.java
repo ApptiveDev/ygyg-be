@@ -51,6 +51,8 @@ public enum BaseResponseStatus {
 	 * 3000: post service error
 	 */
 	NO_EXIST_POST(HttpStatus.NOT_FOUND, false, 3001, "존재하지 않는 글입니다"),
+	NO_EXIST_CATEGORY(HttpStatus.NOT_FOUND, false, 3002, "존재하지 않는 카테고리입니다."),
+	NO_EXIST_UNIT(HttpStatus.NOT_FOUND, false, 3003, "존재하지 않는 소분단위입니다."),
 
 	/**
 	 * 4000: comment service error
