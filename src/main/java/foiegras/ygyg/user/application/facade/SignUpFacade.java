@@ -47,6 +47,7 @@ public class SignUpFacade {
 		// 회원가입
 		CreateUserInDto createUserInDto = CreateUserInDto.builder()
 			.userUuid(userUuid)
+			.userName(inDto.getUserName())
 			.userEmail(inDto.getUserEmail())
 			.userPassword(encodedPassword)
 			.userNickname(inDto.getUserNickname())

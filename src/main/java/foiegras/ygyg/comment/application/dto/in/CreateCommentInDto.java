@@ -1,4 +1,4 @@
-package foiegras.ygyg.user.application.dto.in;
+package foiegras.ygyg.comment.application.dto.in;
 
 
 import lombok.AllArgsConstructor;
@@ -13,12 +13,12 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserInDto {
+public class CreateCommentInDto {
 
-	private UUID userUuid;
-	private String userName;
-	private String userEmail;
-	private String userPassword;
-	private String userNickname;
+	private Long userPostId;
+
+	private UUID writerUuid;
+
+	private String commentContents;
 
 }
