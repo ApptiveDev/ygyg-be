@@ -8,7 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "post")

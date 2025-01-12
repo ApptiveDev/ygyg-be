@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user_post")
@@ -47,7 +47,7 @@ public class UserPostEntity extends BaseTimeEntity {
 	private Integer remainCount;
 
 	// 필터링 -> 최소 참여 달성된 글만 보기
-	// 추후 TODO : 소분 참여 시 다음 조건 때 True로 변경해야함 => if( isFullMinimum == FALSE && 현재인원 >= 최소참여인원 )
+	// TODO : 소분 참여 시 다음 조건 때 True로 변경해야함 => if( isFullMinimum == FALSE && 현재인원 >= 최소참여인원 )
 	@Column(name = "is_full_minimum", nullable = false, columnDefinition = "TINYINT(1) DEFAULT false")
 	private Boolean isFullMinimum;
 
