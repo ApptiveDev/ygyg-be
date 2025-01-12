@@ -35,7 +35,7 @@ public class PostController {
 
 	// 1. 소분글 게시
 	@Operation(summary = "소분글 생성", description = "소분글 생성", tags = { "Post" })
-	@PostMapping("/")
+	@PostMapping()
 	public BaseResponse<Void> createPost(@Valid @RequestBody CreatePostRequest request) {
 
 		CreatePostInDto indto = modelMapper.map(request, CreatePostInDto.class);
