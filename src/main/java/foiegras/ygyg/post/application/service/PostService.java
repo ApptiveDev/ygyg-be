@@ -39,18 +39,18 @@ public class PostService {
 	@Transactional
 	public void createPost(CreatePostInDto indto) {
 
-		// JPA는 find 시 리턴값이 pk라서 인덱스값 얻는데 곧바로 활용가능
-		SeasoningCategoryEntity categoryId = seasoningCategoryJpaRepository
+		// JPA는 find 시 엔티티를 리턴. 이를 인덱스값 얻는데 곧바로 활용가능
+		SeasoningCategoryEntity categoryEntity = seasoningCategoryJpaRepository
 			.findByCategoryName(indto.getCategoryName())
 			.orElseThrow(() -> new RuntimeException("Category not found"));
 
-		ItemPortioningUnitEntity unitId = itemPortioningUnitJpaRepository
+		ItemPortioningUnitEntity unitEntity = itemPortioningUnitJpaRepository
 			.findByUnit(indto.getUnit())
 			.orElseThrow(() -> new RuntimeException("Unit not found"));
 
 		// UserPost 생성 및 저장
 		UserPostEntity userPostEntity = UserPostEntity.builder()
-			.seasoningCategoryEntity(categoryId) // fk 매핑!
+			.seasoningCategoryEntity(categoryEntity) // fk 매핑!
 			.writerUuid(UUID.fromString(indto.getWriterUuid()))
 			.postTitle(indto.getPostTitle())
 			.expectedMinimumPrice(calculateMinimumPrice(indto.getOriginalPrice(), indto.getMaxEngageCount()))
@@ -70,7 +70,7 @@ public class PostService {
 		// Post 생성 및 저장
 		PostEntity postEntity = PostEntity.builder()
 			.userPostEntity(savedUserPost)
-			.itemPortioningUnitEntity(unitId)
+			.itemPortioningUnitEntity(unitEntity)
 			.onlinePurchaseUrl(indto.getOnlinePurchaseUrl())
 			.originalPrice(Integer.parseInt(indto.getOriginalPrice()))
 			.amount(Integer.parseInt(indto.getAmount()))
