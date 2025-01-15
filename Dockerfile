@@ -22,7 +22,7 @@ FROM openjdk:17-alpine
 ## Working Directory 설정
 WORKDIR /app
 ## 빌드 스테이지에서 생성된 JAR 파일을 복사
-COPY --from=builder build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/*.jar app.jar
 ## 빌드 시 전달받은 프로필 값을 환경변수로 설정
 ARG PROFILE
 ENV PROFILE=${PROFILE}
