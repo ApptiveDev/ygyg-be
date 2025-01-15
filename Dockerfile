@@ -27,6 +27,6 @@ COPY --from=builder /app/build/libs/*.jar app.jar
 ARG PROFILE
 ENV PROFILE=${PROFILE}
 
-# 3단계: 컨테이너 실행 명령어 설정
+# 3단계: 실행 스테이지(ENTRYPOINT: JAR 파일 실행, JVM 타임존 설정)
 ## JVM 타임존을 서울로 설정, Spring Profile 설정, JAR 파일 실행
-ENTRYPOINT ["java","-jar", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=${PROFILE}", "/app.jar"]
+ENTRYPOINT ["java","-jar", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=${PROFILE}", "/app/app.jar"]
