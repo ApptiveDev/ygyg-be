@@ -21,6 +21,6 @@ public class GetPostOutDto {
 	private String unit;
 	private String category;
 
-	private boolean isActivate;
+	private Boolean isActivate;
 
 }
