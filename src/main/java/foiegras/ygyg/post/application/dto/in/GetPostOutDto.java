@@ -15,12 +15,9 @@ public class GetPostOutDto {
 
 	private UserPostDataOutDto userPostDataOutDto;
 	private PostDataOutDto postDataOutDto;
-
 	private String imageUrl;
-
-	private String unit;
-	private String category;
-
-	private Boolean isActivate;
+	private String unitName;
+	private String categoryName;
+	private Boolean writerActiveState;
 
 }

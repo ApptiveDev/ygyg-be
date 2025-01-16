@@ -1,7 +1,6 @@
 package foiegras.ygyg.post.application.dto.in;
 
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 // getPostOutDto의 Post Entity 필드 컴포지션용 outDto
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PostDataOutDto {
 
 	private String onlinePurchaseUrl;

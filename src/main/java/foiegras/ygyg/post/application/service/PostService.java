@@ -3,15 +3,15 @@ package foiegras.ygyg.post.application.service;
 
 import foiegras.ygyg.global.common.exception.BaseException;
 import foiegras.ygyg.global.common.response.BaseResponseStatus;
-import foiegras.ygyg.post.application.dto.in.CreatePostInDto;
-import foiegras.ygyg.post.application.dto.in.PostDataInDto;
-import foiegras.ygyg.post.application.dto.in.UserPostDataInDto;
+import foiegras.ygyg.post.application.dto.in.*;
 import foiegras.ygyg.post.infrastructure.entity.*;
 import foiegras.ygyg.post.infrastructure.jpa.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -89,6 +89,47 @@ public class PostService {
 			.postEntity(savedPost)
 			.build();
 		itemImageUrlJpaRepository.save(imageUrlEntity);
+	}
+
+
+	// 2. 소분글 상세 조회
+	@Transactional(readOnly = true)
+	public GetPostOutDto getPost(GetPostInDto inDto) {
+
+		// 연관 엔티티들 조회
+		UserPostEntity userPostEntity = userPostJpaRepository.findById(inDto.getUserPostId())
+			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_USER_POST_ENTITY));
+
+		List<ParticipatingUsersEntity> participatingUsersEntity = participatingUsersJpaRepository.findByUserPostEntity(userPostEntity);
+		if (participatingUsersEntity.isEmpty()) throw new BaseException(BaseResponseStatus.NO_EXIST_PARTICIPATING_USERS);
+
+		PostEntity postEntity = postJpaRepository.findByUserPostEntity(userPostEntity)
+			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_POST_ENTITY));
+
+		List<ItemImageUrlEntity> itemImageUrlEntity = itemImageUrlJpaRepository.findByPostEntity(postEntity);
+		if (itemImageUrlEntity.isEmpty()) throw new BaseException(BaseResponseStatus.NO_EXIST_ITEM_IMAGE_URL_ENTITY);
+
+		// Composition 적용한 dto 매핑
+		UserPostDataOutDto userPostDataOutDto = modelMapper.map(userPostEntity, UserPostDataOutDto.class);
+		PostDataOutDto postDataOutDto = modelMapper.map(postEntity, PostDataOutDto.class);
+
+		// 나머지 outDto 필드
+		String imageUrl = itemImageUrlEntity.get(0).getImageUrl(); // 아직은 이미지 한개만 첨부하므로
+		String unitName = postEntity.getItemPortioningUnitEntity().getUnit();
+		String categoryName = userPostEntity.getSeasoningCategoryEntity().getCategoryName();
+		Boolean writerActiveState = participatingUsersJpaRepository
+			.findByUserPostEntityAndParticipatingUserUUID(userPostEntity, inDto.getUserUuid()).isPresent();
+
+		// 리턴할 OutDto 매핑
+		return GetPostOutDto.builder()
+			.userPostDataOutDto(userPostDataOutDto)
+			.postDataOutDto(postDataOutDto)
+			.imageUrl(imageUrl)
+			.unitName(unitName)
+			.categoryName(categoryName)
+			.writerActiveState(writerActiveState)
+			.build();
+
 	}
 
 }

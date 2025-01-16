@@ -11,12 +11,9 @@ public class GetPostResponse {
 
 	private UserPostDataOutDto UserPostDataOutDto;
 	private PostDataOutDto PostDataOutDto;
-
 	private String imageUrl;
-
-	private String unit;
-	private String category;
-
-	private Boolean isActivate;
+	private String unitName;
+	private String categoryName;
+	private Boolean writerActiveState;
 
 }
