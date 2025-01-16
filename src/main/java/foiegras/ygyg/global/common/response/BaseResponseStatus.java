@@ -53,6 +53,10 @@ public enum BaseResponseStatus {
 	NO_EXIST_POST(HttpStatus.NOT_FOUND, false, 3001, "존재하지 않는 글입니다"),
 	NO_EXIST_CATEGORY(HttpStatus.NOT_FOUND, false, 3002, "존재하지 않는 카테고리입니다."),
 	NO_EXIST_UNIT(HttpStatus.NOT_FOUND, false, 3003, "존재하지 않는 소분단위입니다."),
+	NO_EXIST_USER_POST_ENTITY(HttpStatus.NOT_FOUND, false, 3004, "user_post가 존재하지 않습니다."),
+	NO_EXIST_PARTICIPATING_USERS(HttpStatus.NOT_FOUND, false, 3005, "해당 게시글에 참여자 정보가 존재하지 않습니다."),
+	NO_EXIST_POST_ENTITY(HttpStatus.NOT_FOUND, false, 3006, "post가 존재하지 않습니다."),
+	NO_EXIST_ITEM_IMAGE_URL_ENTITY(HttpStatus.NOT_FOUND, false, 3007, "item_image_url이 존재하지 않습니다"),
 
 	/**
 	 * 4000: comment service error
