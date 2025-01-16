@@ -10,14 +10,12 @@ import lombok.Getter;
 public class GetPostResponse {
 
 	private UserPostDataOutDto getUserPostDataOutDto;
-
 	private PostDataOutDto getPostDataOutDto;
 
 	private String imageUrl;
 
-	private Integer unitId;
-
-	private Integer categoryId;
+	private String unit;
+	private String category;
 
 	private boolean isActivate;
 
