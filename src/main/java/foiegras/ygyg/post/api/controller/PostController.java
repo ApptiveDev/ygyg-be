@@ -55,7 +55,7 @@ public class PostController {
 	@Operation(summary = "소분글 상세조회", description = "소분글 상세조회", tags = { "Post" })
 	@GetMapping("/{userPostId}")
 	@SecurityRequirement(name = "Bearer Auth")
-	public BaseResponse<GetPostInDto> getPost(@PathVariable Long userPostId, @AuthenticationPrincipal CustomUserDetails authentication) {
+	public BaseResponse<GetPostResponse> getPost(@PathVariable Long userPostId, @AuthenticationPrincipal CustomUserDetails authentication) {
 		GetPostInDto inDto = GetPostInDto.builder()
 			.userPostId(userPostId)
 			.userUuid(authentication.getUserUuid())
