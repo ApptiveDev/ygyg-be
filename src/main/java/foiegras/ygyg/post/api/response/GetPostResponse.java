@@ -17,6 +17,6 @@ public class GetPostResponse {
 	private String unit;
 	private String category;
 
-	private boolean isActivate;
+	private Boolean isActivate;
 
 }
