@@ -9,8 +9,8 @@ import lombok.Getter;
 @Getter
 public class GetPostResponse {
 
-	private UserPostDataOutDto getUserPostDataOutDto;
-	private PostDataOutDto getPostDataOutDto;
+	private UserPostDataOutDto UserPostDataOutDto;
+	private PostDataOutDto PostDataOutDto;
 
 	private String imageUrl;
 
