@@ -18,8 +18,8 @@ public class GetPostOutDto {
 
 	private String imageUrl;
 
-	private Integer unitId;
-	private Integer categoryId;
+	private String unit;
+	private String category;
 
 	private boolean isActivate;
 
