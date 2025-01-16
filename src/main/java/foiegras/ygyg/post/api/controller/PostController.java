@@ -52,6 +52,7 @@ public class PostController {
 	// 2. 소분글 상세조회
 	@Operation(summary = "소분글 상세조회", description = "소분글 상세조회", tags = { "Post" })
 	@GetMapping("/{userPostId}")
+	@SecurityRequirement(name = "Bearer Auth")
 	public BaseResponse<GetPostInDto> getPost(@PathVariable Long userPostId) {
 		GetPostInDto inDto = new GetPostInDto(userPostId);
 		GetPostOutDto outDto = postService.getPost(inDto);
