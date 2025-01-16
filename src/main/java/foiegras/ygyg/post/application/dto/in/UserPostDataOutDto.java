@@ -15,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserPostDataOutDto {
 
+	private Long id;
 	private UUID writerUuid;
 	private String postTitle;
 	private LocalDateTime portioningDate;
