@@ -6,6 +6,7 @@ import foiegras.ygyg.user.infrastructure.entity.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -34,13 +35,20 @@ public class UserEntity extends BaseTimeEntity {
 	@Column(name = "user_password", length = 100, nullable = false)
 	private String userPassword;
 
-	@Column(name = "user_nickname", length = 20, nullable = false)
+	@Column(name = "user_nickname", length = 10, nullable = false)
 	private String userNickname;
 
 	@Column(name = "user_role", length = 1, nullable = false)
 	@Builder.Default
 	private UserRole userRole = UserRole.USER;
 
+	@Column(name = "deleted_at")
+	private LocalDateTime deletedAt;
+
+
+	/**
+	 * 생성자
+	 */
 
 	// 생성자
 	public static UserEntity createNewUser(UUID userUuid, String userName, String userEmail, String userPassword, String userNickname) {
@@ -52,6 +60,18 @@ public class UserEntity extends BaseTimeEntity {
 			.userNickname(userNickname)
 			.userRole(UserRole.USER)
 			.build();
+	}
+
+
+	/**
+	 * 도메인 로직
+	 * 1. soft delete
+	 */
+
+	// 1. soft delete
+	public UserEntity softDelete(LocalDateTime deletedAt) {
+		this.deletedAt = deletedAt;
+		return this;
 	}
 
 }

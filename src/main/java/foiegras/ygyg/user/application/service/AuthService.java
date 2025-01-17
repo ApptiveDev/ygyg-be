@@ -6,6 +6,7 @@ import foiegras.ygyg.global.common.response.BaseResponseStatus;
 import foiegras.ygyg.global.common.security.CustomUserDetails;
 import foiegras.ygyg.global.common.security.jwt.JwtTokenProvider;
 import foiegras.ygyg.user.application.dto.in.CreateUserInDto;
+import foiegras.ygyg.user.application.dto.in.DeleteAccountInDto;
 import foiegras.ygyg.user.infrastructure.entity.UserEntity;
 import foiegras.ygyg.user.infrastructure.jpa.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class AuthService {
 	 * 1. 유저 생성
 	 * 2. 유저 인증
 	 * 3. 액세스 토큰 생성
+	 * 4. 회원탈퇴
 	 */
 
 	// 1. 유저 생성
@@ -63,6 +65,16 @@ public class AuthService {
 		CustomUserDetails userDetails = new CustomUserDetails(user);
 		// 토큰 반환
 		return jwtTokenProvider.generateToken(userDetails);
+	}
+
+
+	// 4. 회원탈퇴
+	public void deleteAccount(DeleteAccountInDto inDto) {
+		// uuid에 해당하는 유저 조회
+		UserEntity userEntity = userJpaRepository.findByUserUuid(inDto.getUserUuid())
+			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_USER));
+		// hard delete
+		userJpaRepository.delete(userEntity);
 	}
 
 }
