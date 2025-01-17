@@ -19,7 +19,7 @@ public class SeasoningCategoryEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "seasoning_category_id", nullable = false, columnDefinition = "TINYINT")
-	private int id;
+	private Integer id;
 
 	@Column(name = "category_name", nullable = false, length = 20)
 	private String categoryName;

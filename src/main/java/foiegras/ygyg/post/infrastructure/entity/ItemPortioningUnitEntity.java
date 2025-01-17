@@ -15,8 +15,8 @@ public class ItemPortioningUnitEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "item_portioning_unit_id")
-	private Long id;
+	@Column(name = "item_portioning_unit_id", columnDefinition = "TINYINT")
+	private Integer id;
 
 	@Column(name = "unit", length = 2)
 	private String unit;
