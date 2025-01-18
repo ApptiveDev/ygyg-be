@@ -3,9 +3,15 @@ package foiegras.ygyg.post.application.service;
 
 import foiegras.ygyg.global.common.exception.BaseException;
 import foiegras.ygyg.global.common.response.BaseResponseStatus;
-import foiegras.ygyg.post.application.dto.in.*;
+import foiegras.ygyg.post.application.dto.post.in.CreatePostInDto;
+import foiegras.ygyg.post.application.dto.post.in.GetPostInDto;
+import foiegras.ygyg.post.application.dto.post.in.PostDataInDto;
+import foiegras.ygyg.post.application.dto.post.in.UserPostDataInDto;
+import foiegras.ygyg.post.application.dto.post.out.GetPostOutDto;
+import foiegras.ygyg.post.application.dto.post.out.PostDataOutDto;
+import foiegras.ygyg.post.application.dto.post.out.UserPostDataOutDto;
 import foiegras.ygyg.post.infrastructure.entity.*;
-import foiegras.ygyg.post.infrastructure.jpa.*;
+import foiegras.ygyg.post.infrastructure.jpa.post.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
