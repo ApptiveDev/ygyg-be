@@ -44,9 +44,9 @@ public class PostController {
 	@Operation(summary = "소분글 생성", description = "소분글 생성", tags = { "Post" })
 	@PostMapping()
 	@SecurityRequirement(name = "Bearer Auth")
-	public BaseResponse<Void> createPost(@Valid @RequestBody CreatePostRequest request) {
-		CreatePostInDto indto = modelMapper.map(request, CreatePostInDto.class);
-		postService.createPost(indto);
+	public BaseResponse<Void> createPost(@Valid @RequestBody CreatePostRequest request, @AuthenticationPrincipal CustomUserDetails authentication) {
+		CreatePostInDto inDto = modelMapper.map(request, CreatePostInDto.class);
+		postService.createPost(inDto.toBuilder().writerUuid(authentication.getUserUuid()).build());
 		return new BaseResponse<>();
 	}
 

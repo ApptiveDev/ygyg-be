@@ -40,52 +40,50 @@ public class PostService {
 	 */
 
 	// 1. 소분글 생성
-	public void createPost(CreatePostInDto indto) {
-
+	public void createPost(CreatePostInDto inDto) {
 		// 요청받은 각 카테고리, 소분단위 pk로 알맞는 엔티티 가져오기
 		SeasoningCategoryEntity categoryEntity = seasoningCategoryJpaRepository
-			.findById(indto.getCategoryId())
+			.findById(inDto.getSeasoningCategoryId())
 			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY));
 
 		ItemPortioningUnitEntity unitEntity = itemPortioningUnitJpaRepository
-			.findById(indto.getUnitId())
+			.findById(inDto.getUnitId())
 			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_UNIT));
 
-		// req엔 값이 없어 매핑 후에도 null로 된 속성들 값 채우기
-		UserPostDataInDto userPostDataInDto = modelMapper.map(indto.getUserPostDataInDto(), UserPostDataInDto.class)
+		// post 엔티티 저장
+		PostDataInDto postDataInDto = modelMapper.map(inDto.getPostDataInDto(), PostDataInDto.class);
+
+		PostEntity postEntity = modelMapper.map(postDataInDto, PostEntity.class)
 			.toBuilder()
-			.expectedMinimumPrice(indto.getPostDataInDto().getOriginalPrice() / indto.getPostDataInDto().getMaxEngageCount())
-			.remainCount(indto.getPostDataInDto().getMaxEngageCount() - 1)
-			.isFullMinimum(false)
+			.itemPortioningUnitEntity(unitEntity)
 			.build();
+		PostEntity savedPost = postJpaRepository.save(postEntity);
+
+		// req엔 값이 없어 매핑 후에도 null로 된 속성들 값 채우기
+		UserPostDataInDto userPostDataInDto = modelMapper.map(inDto.getUserPostDataInDto(), UserPostDataInDto.class);
 
 		// tobuilder로 기생성된 인스턴스에 연관관계 객체 추가적으로 매핑
 		UserPostEntity userPostEntity = modelMapper.map(userPostDataInDto, UserPostEntity.class)
 			.toBuilder()
+			.writerUuid(inDto.getWriterUuid())
+			.expectedMinimumPrice(inDto.getPostDataInDto().getOriginalPrice() / inDto.getPostDataInDto().getMaxEngageCount())
+			.remainCount(inDto.getPostDataInDto().getMaxEngageCount() - 1)
+			.isFullMinimum(false)
 			.seasoningCategoryEntity(categoryEntity)
+			.postEntity(savedPost)
 			.build();
 		UserPostEntity savedUserPost = userPostJpaRepository.save(userPostEntity);
 
 		// 게시자 추가
 		ParticipatingUsersEntity participatingUser = ParticipatingUsersEntity.builder()
-			.participatingUserUUID(indto.getUserPostDataInDto().getWriterUuid())
+			.participatingUserUUID(inDto.getWriterUuid())
 			.userPostEntity(savedUserPost) // userpost의 jpa 리턴값이 매핑되는 엔티티 인자로 바로 활용되는 포인트
 			.build();
 		participatingUsersJpaRepository.save(participatingUser);
 
-		// post 엔티티 저장
-		PostDataInDto postDataInDto = modelMapper.map(indto.getPostDataInDto(), PostDataInDto.class);
-
-		PostEntity postEntity = modelMapper.map(postDataInDto, PostEntity.class)
-			.toBuilder()
-			.userPostEntity(savedUserPost)
-			.itemPortioningUnitEntity(unitEntity)
-			.build();
-		PostEntity savedPost = postJpaRepository.save(postEntity);
-
 		// ItemImageUrl 생성 및 저장
 		ItemImageUrlEntity imageUrlEntity = ItemImageUrlEntity.builder()
-			.imageUrl(indto.getImageUrl())
+			.imageUrl(inDto.getImageUrl())
 			.postEntity(savedPost)
 			.build();
 		itemImageUrlJpaRepository.save(imageUrlEntity);
@@ -103,8 +101,7 @@ public class PostService {
 		List<ParticipatingUsersEntity> participatingUsersEntity = participatingUsersJpaRepository.findByUserPostEntity(userPostEntity);
 		if (participatingUsersEntity.isEmpty()) throw new BaseException(BaseResponseStatus.NO_EXIST_PARTICIPATING_USERS);
 
-		PostEntity postEntity = postJpaRepository.findByUserPostEntity(userPostEntity)
-			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_POST_ENTITY));
+		PostEntity postEntity = userPostEntity.getPostEntity();
 
 		List<ItemImageUrlEntity> itemImageUrlEntity = itemImageUrlJpaRepository.findByPostEntity(postEntity);
 		if (itemImageUrlEntity.isEmpty()) throw new BaseException(BaseResponseStatus.NO_EXIST_ITEM_IMAGE_URL_ENTITY);
