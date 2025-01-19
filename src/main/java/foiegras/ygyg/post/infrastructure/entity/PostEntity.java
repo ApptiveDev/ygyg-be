@@ -19,11 +19,6 @@ public class PostEntity {
 	@Column(name = "post_id")
 	private Long id;
 
-	// userPostId(FK)가 이 엔티티에 있어야 user_post_id로 post entity 객체를 찾을 수 있다
-	@OneToOne
-	@JoinColumn(name = "user_post_id")
-	private UserPostEntity userPostEntity;
-
 	// 상품소분단위 테이블과 다대일 매핑
 	@ManyToOne
 	@JoinColumn(name = "item_portining_unit_id")
@@ -49,7 +44,8 @@ public class PostEntity {
 	// 엔티티 변수 직접 초기화는 스키마 생성 DDL에 영향없으니 ColumnDefault나 다른 방식으로 초기화해야함
 	@Column(name = "current_engage_count", nullable = false, columnDefinition = "TINYINT")
 	@ColumnDefault("1")
-	private Integer currentEngageCount;
+	@Builder.Default
+	private Integer currentEngageCount = 1;
 
 	@Column(name = "portioning_place_latitude", nullable = false)
 	private Double portioningPlaceLatitude;
