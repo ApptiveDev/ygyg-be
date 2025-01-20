@@ -129,6 +129,12 @@ public class PostService {
 
 	}
 
+
+	// 5. 현재 참여인원 수정
+	public PostEntity updateCurrentEngageCount(PostEntity postEntity, String type) {
+		return postEntity.updateCurrentEngageCount(type);
+	}
+
 }
 
 
