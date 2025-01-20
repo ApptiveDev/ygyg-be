@@ -57,6 +57,9 @@ public enum BaseResponseStatus {
 	NO_EXIST_PARTICIPATING_USERS(HttpStatus.NOT_FOUND, false, 3005, "해당 게시글에 참여자 정보가 존재하지 않습니다."),
 	NO_EXIST_POST_ENTITY(HttpStatus.NOT_FOUND, false, 3006, "post가 존재하지 않습니다."),
 	NO_EXIST_ITEM_IMAGE_URL_ENTITY(HttpStatus.NOT_FOUND, false, 3007, "item_image_url이 존재하지 않습니다"),
+	CAPACITY_REACHED(HttpStatus.CONFLICT, false, 3008, "정원이 마감되었습니다"),
+	JOIN_PORTIONING_RETRY_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, false, 3009, "소분글 참여에 실패했습니다. 다시 시도해주세요"),
+	ALREADY_PARTICIPATED(HttpStatus.CONFLICT, false, 3010, "이미 참여중인 소분글입니다"),
 
 	/**
 	 * 4000: comment service error

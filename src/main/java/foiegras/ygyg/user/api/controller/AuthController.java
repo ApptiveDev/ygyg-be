@@ -2,23 +2,25 @@ package foiegras.ygyg.user.api.controller;
 
 
 import foiegras.ygyg.global.common.response.BaseResponse;
+import foiegras.ygyg.global.common.security.CustomUserDetails;
 import foiegras.ygyg.user.api.request.SignInRequest;
 import foiegras.ygyg.user.api.request.SignUpRequest;
 import foiegras.ygyg.user.api.response.SignInResponse;
+import foiegras.ygyg.user.application.dto.in.DeleteAccountInDto;
 import foiegras.ygyg.user.application.dto.in.SignInInDto;
 import foiegras.ygyg.user.application.dto.in.SignUpInDto;
 import foiegras.ygyg.user.application.dto.out.SignInOutDto;
 import foiegras.ygyg.user.application.facade.SignInFacade;
 import foiegras.ygyg.user.application.facade.SignUpFacade;
+import foiegras.ygyg.user.application.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Validated
@@ -30,6 +32,7 @@ public class AuthController {
 	// service
 	private final SignUpFacade signUpFacade;
 	private final SignInFacade signInFacade;
+	private final AuthService authService;
 	// util
 	private final ModelMapper modelMapper;
 
@@ -38,6 +41,7 @@ public class AuthController {
 	 * AuthController
 	 * 1. 회원가입
 	 * 2. 로그인
+	 * 3. 회원탈퇴
 	 */
 
 	// 1. 회원가입
@@ -58,6 +62,16 @@ public class AuthController {
 		SignInOutDto outDto = signInFacade.signIn(inDto);
 		SignInResponse response = modelMapper.map(outDto, SignInResponse.class);
 		return new BaseResponse<>(response);
+	}
+
+
+	// 3. 회원탈퇴
+	@Operation(summary = "회원탈퇴", description = "회원탈퇴", tags = { "Auth" })
+	@DeleteMapping("/account")
+	@SecurityRequirement(name = "Bearer Auth")
+	public BaseResponse<Void> deleteAccount(@AuthenticationPrincipal CustomUserDetails authentication) {
+		authService.deleteAccount(new DeleteAccountInDto(authentication.getUserUuid()));
+		return new BaseResponse<>();
 	}
 
 }

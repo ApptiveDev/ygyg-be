@@ -24,8 +24,21 @@ public class ParticipatingUsersEntity {
 	private UUID participatingUserUUID;
 
 	// 다대일 단방향에서 fk는 多인 참여자 엔티티가 갖게 된다
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_post_id")
 	private UserPostEntity userPostEntity;
+
+
+	/**
+	 * 생성자
+	 * - createNew: 참여자 UUID, 참여자가 참여한 게시글
+	 */
+
+	public static ParticipatingUsersEntity createNew(UUID participatingUserUUID, UserPostEntity userPostEntity) {
+		return ParticipatingUsersEntity.builder()
+			.participatingUserUUID(participatingUserUUID)
+			.userPostEntity(userPostEntity)
+			.build();
+	}
 
 }

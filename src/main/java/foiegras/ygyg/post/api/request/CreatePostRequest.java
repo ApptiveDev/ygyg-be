@@ -21,6 +21,6 @@ public class CreatePostRequest {
 	private Integer unitId;
 
 	@NotNull
-	private Integer categoryId;
+	private Integer seasoningCategoryId;
 
 }

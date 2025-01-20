@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 
 @Getter
@@ -19,18 +18,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserPostDataInDto {
 
-	@NotNull
-	private UUID writerUuid;
-
 	@NotBlank
 	@Size(max = 50)
 	private String postTitle;
 
 	@NotNull
 	private LocalDateTime portioningDate;
-
-	private Integer expectedMinimumPrice;
-	private Integer remainCount;
-	private Boolean isFullMinimum;
 
 }

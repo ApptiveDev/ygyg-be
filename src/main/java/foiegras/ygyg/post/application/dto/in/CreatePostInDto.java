@@ -6,9 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreatePostInDto {
@@ -24,7 +26,9 @@ public class CreatePostInDto {
 	private Integer unitId;
 
 	//## SeasoningCategoryEntity
-	private Integer categoryId;
+	private Integer seasoningCategoryId;
+
+	private UUID writerUuid;
 
 }
 
