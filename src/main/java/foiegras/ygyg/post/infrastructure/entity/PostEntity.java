@@ -14,6 +14,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "post")
 public class PostEntity {
 
+	// value
+	private final static String JOIN = "join";
+	private final static String CANCEL = "cancel";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "post_id")
@@ -62,5 +66,20 @@ public class PostEntity {
 
 	@Column(name = "portioning_place_detail_address", length = 100, nullable = false)
 	private String portioningPlaceDetailAddress;
+
+
+	/**
+	 * PostEntity
+	 * 1. 현재 참여 인원수 업데이트
+	 */
+
+	public PostEntity updateCurrentEngageCount(String type) {
+		if (type.equals(JOIN)) {
+			this.currentEngageCount++;
+		} else if (type.equals(CANCEL)) {
+			this.currentEngageCount--;
+		}
+		return this;
+	}
 
 }
