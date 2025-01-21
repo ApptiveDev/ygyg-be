@@ -24,7 +24,6 @@ public class PostListController {
 
 	//utils
 	private final ModelMapper modelMapper;
-
 	//services
 	private final PostListService postListService;
 
@@ -39,7 +38,7 @@ public class PostListController {
 	@GetMapping()
 	public BaseResponse<GetPostListResponse> getPostList(@RequestParam String sortBy,
 		@RequestParam Integer page, @RequestParam(defaultValue = "9") Integer size) {
-		GetPostListInDto getPostListInDto = GetPostListInDto.builder()
+		GetPostListInDto inDto = GetPostListInDto.builder()
 			.sortBy(sortBy)
 			.page(page)
 			.size(size).build();
