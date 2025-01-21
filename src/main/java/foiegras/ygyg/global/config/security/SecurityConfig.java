@@ -67,7 +67,8 @@ public class SecurityConfig {
 
 	// post
 	private static final RequestMatcher[] postListUrl = new RequestMatcher[] {
-		new AntPathRequestMatcher("/api/v1/list/**", GET),
+		new AntPathRequestMatcher("/api/v1/post/list", GET),
+		new AntPathRequestMatcher("/api/v1/post/category-list/**", GET),
 
 	};
 
