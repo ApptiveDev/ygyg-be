@@ -14,7 +14,6 @@ public class CreatePostRequest {
 
 	private PostDataInDto postDataInDto;
 
-	@NotNull
 	private String imageUrl;
 
 	@NotNull
