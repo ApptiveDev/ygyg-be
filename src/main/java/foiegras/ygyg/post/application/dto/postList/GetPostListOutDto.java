@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GetPostListOutDto {
 
-	private List<PageListItemDto> items;
+	private List<PostListItemDto> items;
 	private PageInfoDto pageInfoDto;
 
 }
