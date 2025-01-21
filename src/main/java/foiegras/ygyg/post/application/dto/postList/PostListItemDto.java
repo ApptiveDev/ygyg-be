@@ -4,7 +4,7 @@ package foiegras.ygyg.post.application.dto.postList;
 import java.time.LocalDateTime;
 
 
-public class PageListItemDto {
+public class PostListItemDto {
 
 	private Long userPostId;
 	private String postTitle;
