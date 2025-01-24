@@ -19,4 +19,10 @@ public interface ParticipatingUsersJpaRepository extends JpaRepository<Participa
 		UUID userUuid
 	);
 
+	// UserUuid와 UserPostEntity로 참여자 존재 여부 확인
+	boolean existsByParticipatingUserUUIDAndUserPostEntity(UUID participantUuid, UserPostEntity userPost);
+
+	// UserUuid로 참여자 삭제
+	void deleteAllByParticipatingUserUUID(UUID userUuid);
+
 }

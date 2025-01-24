@@ -2,7 +2,7 @@ package foiegras.ygyg.post.api.response;
 
 
 import foiegras.ygyg.post.application.dto.post.out.PostDataOutDto;
-import foiegras.ygyg.post.application.dto.post.out.UserPostDataOutDto;
+import foiegras.ygyg.post.application.dto.userpost.out.UserPostDataOutDto;
 import lombok.Getter;
 
 

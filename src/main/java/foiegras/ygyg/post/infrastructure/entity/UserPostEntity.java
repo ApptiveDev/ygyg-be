@@ -17,10 +17,22 @@ import java.util.UUID;
 @Table(name = "user_post")
 public class UserPostEntity extends BaseTimeEntity {
 
+	// value
+	private final static String JOIN = "join";
+	private final static String CANCEL = "cancel";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_post_id")
 	private Long id;
+
+	@Version
+	@Column(name = "version", nullable = false)
+	private Long version;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "post_id")
+	private PostEntity postEntity;
 
 	// user_post가 Many, category가 One이며 양방향 맛보기로 가보기
 	// 양방향의 경우 외래키를 가진 이 엔티티가 연관관계의 주인이다. 보통 다대일에서 다가 fk를 가짐
@@ -53,5 +65,31 @@ public class UserPostEntity extends BaseTimeEntity {
 
 	@Column(name = "portioning_date", nullable = false)
 	private LocalDateTime portioningDate;
+
+
+	/**
+	 * UserPostEntity
+	 * 1. 참여 가능 남은 인원수 업데이트
+	 * 2. 최소 참여 인원 달성 여부 업데이트
+	 */
+
+	// 1. 참여 가능 남은 인원수 업데이트
+	public UserPostEntity updateRemainCount(String type) {
+		if (type.equals(JOIN)) {
+			this.remainCount--;
+		} else if (type.equals(CANCEL)) {
+			this.remainCount++;
+		}
+		return this;
+	}
+
+
+	// 2. 최소 참여 인원 달성 여부 업데이트
+	public UserPostEntity updateIsFullMinimum(Integer currentEngageCount, Integer minEngageCount) {
+		if (currentEngageCount >= minEngageCount) {
+			this.isFullMinimum = true;
+		}
+		return this;
+	}
 
 }

@@ -33,9 +33,6 @@ public class PostDataInDto {
 	private Integer maxEngageCount;
 
 	@NotNull
-	private Integer currentEngageCount;
-
-	@NotNull
 	private Double portioningPlaceLatitude;
 
 	@NotNull

@@ -1,4 +1,4 @@
-package foiegras.ygyg.post.application.dto.post.out;
+package foiegras.ygyg.post.application.dto.userpost.out;
 
 
 import lombok.Getter;

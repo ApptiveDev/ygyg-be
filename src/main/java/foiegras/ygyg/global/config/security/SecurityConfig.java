@@ -66,9 +66,9 @@ public class SecurityConfig {
 	};
 
 	// post
-	private static final RequestMatcher[] postListUrl = new RequestMatcher[] {
+	private static final RequestMatcher[] postUrl = new RequestMatcher[] {
 		new AntPathRequestMatcher("/api/v1/post/list", GET),
-		new AntPathRequestMatcher("/api/v1/post/category-list/**", GET),
+		new AntPathRequestMatcher("/api/v1/post/list/**", GET),
 
 	};
 
@@ -99,7 +99,7 @@ public class SecurityConfig {
 				.requestMatchers(authUrl).permitAll()
 				.requestMatchers(emailUrl).permitAll()
 				.requestMatchers(commonUrl).permitAll() // 공통 url
-				.requestMatchers(postListUrl).permitAll()
+				.requestMatchers(postUrl).permitAll()
 				// 이외의 url은 허용하지 않음
 				.anyRequest().authenticated())
 			// 폼 로그인 사용 안함

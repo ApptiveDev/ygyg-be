@@ -1,4 +1,4 @@
-package foiegras.ygyg.post.application.dto.postList;
+package foiegras.ygyg.post.application.dto.userpost.out;
 
 
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostListItemDto {
+public class UserPostItemDto {
 
 	private Long userPostId;
 	private String postTitle;

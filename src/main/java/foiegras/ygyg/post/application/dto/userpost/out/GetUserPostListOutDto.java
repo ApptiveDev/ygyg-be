@@ -1,4 +1,4 @@
-package foiegras.ygyg.post.application.dto.postList;
+package foiegras.ygyg.post.application.dto.userpost.out;
 
 
 import lombok.AllArgsConstructor;
@@ -13,9 +13,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPostListOutDto {
+public class GetUserPostListOutDto {
 
-	private List<PostListItemDto> items;
+	private List<UserPostItemDto> items;
 	private PageInfoDto pageInfoDto;
 
 }
