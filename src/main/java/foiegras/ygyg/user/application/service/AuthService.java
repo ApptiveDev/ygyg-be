@@ -5,12 +5,14 @@ import foiegras.ygyg.global.common.exception.BaseException;
 import foiegras.ygyg.global.common.response.BaseResponseStatus;
 import foiegras.ygyg.global.common.security.CustomUserDetails;
 import foiegras.ygyg.global.common.security.jwt.JwtTokenProvider;
+import foiegras.ygyg.user.application.dto.event.DeleteAccountEvent;
 import foiegras.ygyg.user.application.dto.in.CreateUserInDto;
 import foiegras.ygyg.user.application.dto.in.DeleteAccountInDto;
 import foiegras.ygyg.user.infrastructure.entity.UserEntity;
 import foiegras.ygyg.user.infrastructure.jpa.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class AuthService {
 	// util
 	private final AuthenticationManager authenticationManager;
 	private final JwtTokenProvider jwtTokenProvider;
+	private final ApplicationEventPublisher eventPublisher;
 
 
 	/**
@@ -36,6 +39,7 @@ public class AuthService {
 	 * 2. 유저 인증
 	 * 3. 액세스 토큰 생성
 	 * 4. 회원탈퇴
+	 * 5. 이벤트 발행
 	 */
 
 	// 1. 유저 생성
@@ -75,6 +79,14 @@ public class AuthService {
 			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_USER));
 		// hard delete
 		userJpaRepository.delete(userEntity);
+		// 이벤트 발행
+		this.publishEvent(new DeleteAccountEvent(inDto.getUserUuid(), inDto.getDeletedAt()));
+	}
+
+
+	// 5. 이벤트 발행
+	private <T> void publishEvent(T event) {
+		eventPublisher.publishEvent(event);
 	}
 
 }

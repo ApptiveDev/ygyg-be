@@ -24,6 +24,7 @@ public class ParticipatingUserService {
 	 * ParticipatingUserService
 	 * 1. 참여자 생성
 	 * 2. 참여 상태 확인
+	 * 3. 참여자 삭제
 	 */
 
 	// 1. 참여자 생성
@@ -32,8 +33,14 @@ public class ParticipatingUserService {
 	}
 
 
+	// 2. 참여 상태 확인
 	public boolean checkParticipatedState(UUID participantUuid, UserPostEntity userPost) {
 		return participatingUsersJpaRepository.existsByParticipatingUserUUIDAndUserPostEntity(participantUuid, userPost);
+	}
+
+
+	public void deleteParticipatingUserByUserUuid(UUID userUuid) {
+		participatingUsersJpaRepository.deleteAllByParticipatingUserUUID(userUuid);
 	}
 
 }
