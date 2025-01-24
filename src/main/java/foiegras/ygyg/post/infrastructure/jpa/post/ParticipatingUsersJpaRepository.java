@@ -1,4 +1,4 @@
-package foiegras.ygyg.post.infrastructure.jpa;
+package foiegras.ygyg.post.infrastructure.jpa.post;
 
 
 import foiegras.ygyg.post.infrastructure.entity.ParticipatingUsersEntity;
@@ -21,5 +21,8 @@ public interface ParticipatingUsersJpaRepository extends JpaRepository<Participa
 
 	// UserUuid와 UserPostEntity로 참여자 존재 여부 확인
 	boolean existsByParticipatingUserUUIDAndUserPostEntity(UUID participantUuid, UserPostEntity userPost);
+
+	// UserUuid로 참여자 삭제
+	void deleteAllByParticipatingUserUUID(UUID userUuid);
 
 }

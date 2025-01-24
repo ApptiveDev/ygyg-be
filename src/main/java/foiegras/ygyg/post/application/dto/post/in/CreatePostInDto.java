@@ -1,6 +1,7 @@
-package foiegras.ygyg.post.application.dto.in;
+package foiegras.ygyg.post.application.dto.post.in;
 
 
+import foiegras.ygyg.post.application.dto.userpost.in.UserPostDataInDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

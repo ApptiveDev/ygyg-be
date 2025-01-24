@@ -3,7 +3,7 @@ package foiegras.ygyg.post.application.facade;
 
 import foiegras.ygyg.global.common.exception.BaseException;
 import foiegras.ygyg.global.common.response.BaseResponseStatus;
-import foiegras.ygyg.post.application.dto.in.JoinPortioningInDto;
+import foiegras.ygyg.post.application.dto.userpost.in.JoinPortioningInDto;
 import foiegras.ygyg.post.application.service.ParticipatingUserService;
 import foiegras.ygyg.post.application.service.PostService;
 import foiegras.ygyg.post.application.service.UserPostService;

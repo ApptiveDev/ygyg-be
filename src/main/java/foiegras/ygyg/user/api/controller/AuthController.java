@@ -22,6 +22,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 
 @Validated
 @RestController
@@ -70,7 +72,7 @@ public class AuthController {
 	@DeleteMapping("/account")
 	@SecurityRequirement(name = "Bearer Auth")
 	public BaseResponse<Void> deleteAccount(@AuthenticationPrincipal CustomUserDetails authentication) {
-		authService.deleteAccount(new DeleteAccountInDto(authentication.getUserUuid()));
+		authService.deleteAccount(new DeleteAccountInDto(authentication.getUserUuid(), LocalDateTime.now()));
 		return new BaseResponse<>();
 	}
 

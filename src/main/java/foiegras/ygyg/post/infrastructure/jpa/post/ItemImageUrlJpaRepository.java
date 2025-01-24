@@ -1,4 +1,4 @@
-package foiegras.ygyg.post.infrastructure.jpa;
+package foiegras.ygyg.post.infrastructure.jpa.post;
 
 
 import foiegras.ygyg.post.infrastructure.entity.ItemImageUrlEntity;

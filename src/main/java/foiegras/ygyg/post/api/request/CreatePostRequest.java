@@ -1,8 +1,8 @@
 package foiegras.ygyg.post.api.request;
 
 
-import foiegras.ygyg.post.application.dto.in.PostDataInDto;
-import foiegras.ygyg.post.application.dto.in.UserPostDataInDto;
+import foiegras.ygyg.post.application.dto.post.in.PostDataInDto;
+import foiegras.ygyg.post.application.dto.userpost.in.UserPostDataInDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -14,7 +14,6 @@ public class CreatePostRequest {
 
 	private PostDataInDto postDataInDto;
 
-	@NotNull
 	private String imageUrl;
 
 	@NotNull
