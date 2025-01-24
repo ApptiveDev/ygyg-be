@@ -1,4 +1,4 @@
-package foiegras.ygyg.post.application.dto.in;
+package foiegras.ygyg.post.application.dto.userpost.in;
 
 
 import jakarta.validation.constraints.NotBlank;

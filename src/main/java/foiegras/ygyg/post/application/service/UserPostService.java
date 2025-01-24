@@ -3,11 +3,25 @@ package foiegras.ygyg.post.application.service;
 
 import foiegras.ygyg.global.common.exception.BaseException;
 import foiegras.ygyg.global.common.response.BaseResponseStatus;
+import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListByCategoryInDto;
+import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListInDto;
+import foiegras.ygyg.post.application.dto.userpost.out.GetUserPostListOutDto;
+import foiegras.ygyg.post.application.dto.userpost.out.PageInfoDto;
+import foiegras.ygyg.post.application.dto.userpost.out.UserPostItemDto;
+import foiegras.ygyg.post.infrastructure.entity.ItemImageUrlEntity;
+import foiegras.ygyg.post.infrastructure.entity.PostEntity;
+import foiegras.ygyg.post.infrastructure.entity.SeasoningCategoryEntity;
 import foiegras.ygyg.post.infrastructure.entity.UserPostEntity;
-import foiegras.ygyg.post.infrastructure.jpa.UserPostJpaRepository;
+import foiegras.ygyg.post.infrastructure.jpa.post.ItemImageUrlJpaRepository;
+import foiegras.ygyg.post.infrastructure.jpa.post.SeasoningCategoryJpaRepository;
+import foiegras.ygyg.post.infrastructure.jpa.post.UserPostJpaRepository;
 import foiegras.ygyg.post.infrastructure.querydsl.UserPostQueryDslRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +41,10 @@ public class UserPostService {
 	// repository
 	private final UserPostJpaRepository userPostJpaRepository;
 	private final UserPostQueryDslRepository userPostQueryDslRepository;
+	// todo: 반드시 분리할 것.
+	private final ItemImageUrlJpaRepository itemImageUrlJpaRepository;
+	// todo: 반드시 분리할 것.
+	private final SeasoningCategoryJpaRepository seasoningCategoryJpaRepository;
 	// util
 	private final ModelMapper modelMapper;
 
@@ -38,6 +56,8 @@ public class UserPostService {
 	 * 3. 참여 가능 남은 인원수 업데이트
 	 * 4. 최소 참여 인원 달성 여부 업데이트
 	 * 5. 작성자 UUID로 진행중인 소분글 조회
+	 * 6. 소분글 리스트 조회
+	 * 7. 카테고리로 소분글 리스트 조회
 	 */
 
 	// 1. id로 UserPost 조회
@@ -71,6 +91,85 @@ public class UserPostService {
 	// 5. 작성자 UUID로 진행중인 소분글 조회
 	public List<UserPostEntity> findNotFinishedUserPostListByUserUuid(UUID writerUuid, LocalDateTime deletedAt) {
 		return userPostQueryDslRepository.findNotFinishedUserPostByUserUuid(writerUuid, deletedAt);
+	}
+
+
+	// 6. 소분글 리스트 조회
+	public GetUserPostListOutDto getUserPostList(GetUserPostListInDto inDto) {
+		Pageable newPageable = inDto.getPageable();
+		Pageable pageable = PageRequest.of(newPageable.getPageNumber(), newPageable.getPageSize(), createSortBy(inDto.getSortBy()));
+
+		// userPost 엔티티 페이지 목록 조회
+		Page<UserPostEntity> userPostEntityPage = userPostJpaRepository.findAll(pageable);
+
+		// 정렬 기준에 맞게 가져온 userPostEntities가 담긴 배열을 stream.map()으로 PostListItemDto로 변경
+		List<UserPostItemDto> items = userPostEntityPage.getContent().stream()
+			.map(this::convertToListItemDto).toList();
+
+		PageInfoDto pageInfoDto = PageInfoDto.builder()
+			.totalItemsLength(userPostEntityPage.getTotalElements())
+			.currentPage(userPostEntityPage.getNumber() + 1)
+			.size(userPostEntityPage.getSize()).build();
+
+		return GetUserPostListOutDto.builder()
+			.items(items)
+			.pageInfoDto(pageInfoDto).build();
+	}
+
+
+	// 7. 카테고리로 소분글 리스트 조회 todo: facade로 분리
+	public GetUserPostListOutDto getUserPostListByCategory(GetUserPostListByCategoryInDto inDto) {
+		Pageable newPageable = inDto.getPageable();
+		// 카테고리 id 검증 후 가져오기
+		SeasoningCategoryEntity seasoningCategoryEntity = seasoningCategoryJpaRepository.findById(inDto.getCategoryId())
+			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_CATEGORY));
+
+		Pageable pageable = PageRequest.of(newPageable.getPageNumber(), newPageable.getPageSize(), createSortBy(inDto.getSortBy()));
+
+		// 쿼리 메서드로 카테고리 객체의 id와 동일한 userpost 가져오기
+		Page<UserPostEntity> userPostEntityPage = userPostJpaRepository
+			.findAllBySeasoningCategoryEntityId(seasoningCategoryEntity.getId(), pageable);
+
+		List<UserPostItemDto> items = userPostEntityPage.getContent().stream()
+			.map(this::convertToListItemDto).toList();
+
+		PageInfoDto pageInfoDto = PageInfoDto.builder()
+			.totalItemsLength(userPostEntityPage.getTotalElements())
+			.currentPage(userPostEntityPage.getNumber() + 1)
+			.size(userPostEntityPage.getSize()).build();
+
+		return GetUserPostListOutDto.builder()
+			.items(items)
+			.pageInfoDto(pageInfoDto).build();
+
+	}
+
+
+	// 입력되는 정렬기준에 따라 각기 다른 Sort 객체 리턴
+	private Sort createSortBy(String sortBy) {
+		return switch (sortBy) {
+			case "soonest" -> Sort.by(Sort.Direction.ASC, "portioningDate");
+			case "lowestPrice" -> Sort.by(Sort.Direction.ASC, "expectedMinimumPrice");
+			case "lowestRemain" -> Sort.by(Sort.Direction.ASC, "remainCount");
+			default -> Sort.by(Sort.Direction.DESC, "createdAt");
+		};
+	}
+
+
+	// 개별 userPostEntity => postListItem 매핑용 함수 //todo: facade로 분리
+	private UserPostItemDto convertToListItemDto(UserPostEntity userPostEntity) {
+		PostEntity postEntity = userPostEntity.getPostEntity();
+		List<ItemImageUrlEntity> imageList = itemImageUrlJpaRepository.findByPostEntity(postEntity);
+		String imageUrl = (imageList != null && !imageList.isEmpty()) ? imageList.get(0).getImageUrl() : null;
+		return UserPostItemDto.builder()
+			.userPostId(userPostEntity.getId())
+			.postTitle(userPostEntity.getPostTitle())
+			.portioningDate(userPostEntity.getPortioningDate())
+			.originalPrice(postEntity.getOriginalPrice())
+			.minEngageCount(postEntity.getMinEngageCount())
+			.maxEngageCount(postEntity.getMaxEngageCount())
+			.currentEngageCount(postEntity.getCurrentEngageCount())
+			.imageUrl(imageUrl).build();
 	}
 
 }
