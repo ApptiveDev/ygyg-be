@@ -3,7 +3,7 @@ package foiegras.ygyg.post.application.service;
 
 import foiegras.ygyg.post.infrastructure.entity.ParticipatingUsersEntity;
 import foiegras.ygyg.post.infrastructure.entity.UserPostEntity;
-import foiegras.ygyg.post.infrastructure.jpa.ParticipatingUsersJpaRepository;
+import foiegras.ygyg.post.infrastructure.jpa.post.ParticipatingUsersJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
