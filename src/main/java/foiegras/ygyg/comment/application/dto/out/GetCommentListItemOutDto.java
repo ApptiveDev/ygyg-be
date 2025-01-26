@@ -8,14 +8,14 @@ import java.util.UUID;
 
 
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class GetCommentListItemOutDto {
 
-	// 탈퇴한 유저 시 null
 	private UUID writerUuid;
+	private String userNickname;
 	private String commentContents;
 	private LocalDateTime createdAt;
 

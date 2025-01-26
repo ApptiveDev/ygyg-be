@@ -57,8 +57,7 @@ public class CommentController {
 	@SecurityRequirement(name = "Bearer Auth")
 	public BaseResponse<GetCommentResponse> getComment(@PathVariable Long userPostId) {
 		GetCommentInDto inDto = GetCommentInDto.builder().userPostId(userPostId).build();
-		List<GetCommentListItemOutDto> outDto = commentService.getComment(inDto)
-			.stream().map(comment -> modelMapper.map(comment, GetCommentListItemOutDto.class)).toList();
+		List<GetCommentListItemOutDto> outDto = commentService.getComment(inDto);
 		GetCommentResponse response = GetCommentResponse.builder().comments(outDto).build();
 		return new BaseResponse<>(response);
 	}

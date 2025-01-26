@@ -11,7 +11,7 @@ public interface CommentRepository {
 	// 댓글 저장
 	Comment save(Comment comment);
 
-	// 댓글 조회
+	// userPostId로 게시글의 댓글 리스트 조회
 	List<Comment> findAllByUserPostId(Long userPostId);
 
 }
