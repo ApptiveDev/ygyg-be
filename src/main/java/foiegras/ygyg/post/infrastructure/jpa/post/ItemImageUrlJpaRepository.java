@@ -12,4 +12,6 @@ public interface ItemImageUrlJpaRepository extends JpaRepository<ItemImageUrlEnt
 
 	List<ItemImageUrlEntity> findByPostEntity(PostEntity postEntity);
 
+	void deleteByPostEntity(PostEntity postEntity);
+
 }
