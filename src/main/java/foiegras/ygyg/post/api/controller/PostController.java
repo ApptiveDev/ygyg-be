@@ -73,9 +73,11 @@ public class PostController {
 	@Operation(summary = "소분글 수정", description = "소분글 수정", tags = { "Post" })
 	@PutMapping("/{userPostId}")
 	@SecurityRequirement(name = "Bearer Auth")
-	public BaseResponse<Void> updatePost(@PathVariable Long userPostId, @RequestBody UpdatePostRequest request) {
+	public BaseResponse<Void> updatePost(@PathVariable Long userPostId, @RequestBody UpdatePostRequest request, @AuthenticationPrincipal CustomUserDetails auth) {
 		UpdatePostInDto inDto = modelMapper.map(request, UpdatePostInDto.class);
-		inDto = inDto.toBuilder().userPostId(userPostId).build();
+		inDto = inDto.toBuilder()
+			.userPostId(userPostId)
+			.userUuid(auth.getUserUuid()).build();
 		postService.updatePost(inDto);
 		return new BaseResponse<>();
 	}
@@ -85,10 +87,10 @@ public class PostController {
 	@Operation(summary = "소분글 삭제", description = "소분글 삭제", tags = { "Post" })
 	@DeleteMapping("/{userPostId}")
 	@SecurityRequirement(name = "Bearer Auth")
-	public BaseResponse<Void> deletePost(@PathVariable Long userPostId) {
+	public BaseResponse<Void> deletePost(@PathVariable Long userPostId, @AuthenticationPrincipal CustomUserDetails auth) {
 		DeletePostInDto inDto = DeletePostInDto.builder()
 			.userPostId(userPostId)
-			.build();
+			.userUuid(auth.getUserUuid()).build();
 		postService.deletePost(inDto);
 		return new BaseResponse<>();
 	}
