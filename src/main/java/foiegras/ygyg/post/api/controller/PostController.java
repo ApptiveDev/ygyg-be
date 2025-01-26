@@ -4,9 +4,12 @@ package foiegras.ygyg.post.api.controller;
 import foiegras.ygyg.global.common.response.BaseResponse;
 import foiegras.ygyg.global.common.security.CustomUserDetails;
 import foiegras.ygyg.post.api.request.CreatePostRequest;
+import foiegras.ygyg.post.api.request.UpdatePostRequest;
 import foiegras.ygyg.post.api.response.GetPostResponse;
 import foiegras.ygyg.post.application.dto.post.in.CreatePostInDto;
+import foiegras.ygyg.post.application.dto.post.in.DeletePostInDto;
 import foiegras.ygyg.post.application.dto.post.in.GetPostInDto;
+import foiegras.ygyg.post.application.dto.post.in.UpdatePostInDto;
 import foiegras.ygyg.post.application.dto.post.out.GetPostOutDto;
 import foiegras.ygyg.post.application.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,6 +66,31 @@ public class PostController {
 		GetPostOutDto outDto = postService.getPost(inDto);
 		GetPostResponse response = modelMapper.map(outDto, GetPostResponse.class);
 		return new BaseResponse<>(response);
+	}
+
+
+	// 3. 소분글 수정
+	@Operation(summary = "소분글 수정", description = "소분글 수정", tags = { "Post" })
+	@PutMapping("/{userPostId}")
+	@SecurityRequirement(name = "Bearer Auth")
+	public BaseResponse<Void> updatePost(@PathVariable Long userPostId, @RequestBody UpdatePostRequest request) {
+		UpdatePostInDto inDto = modelMapper.map(request, UpdatePostInDto.class);
+		inDto = inDto.toBuilder().userPostId(userPostId).build();
+		postService.updatePost(inDto);
+		return new BaseResponse<>();
+	}
+
+
+	// 4. 소분글 삭제
+	@Operation(summary = "소분글 삭제", description = "소분글 삭제", tags = { "Post" })
+	@DeleteMapping("/{userPostId}")
+	@SecurityRequirement(name = "Bearer Auth")
+	public BaseResponse<Void> deletePost(@PathVariable Long userPostId) {
+		DeletePostInDto inDto = DeletePostInDto.builder()
+			.userPostId(userPostId)
+			.build();
+		postService.deletePost(inDto);
+		return new BaseResponse<>();
 	}
 
 }
