@@ -25,4 +25,6 @@ public interface ParticipatingUsersJpaRepository extends JpaRepository<Participa
 	// UserUuid로 참여자 삭제
 	void deleteAllByParticipatingUserUUID(UUID userUuid);
 
+	void deleteByUserPostEntity(UserPostEntity userPostEntity);
+
 }
