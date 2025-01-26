@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 
 @Getter
 @Builder
@@ -15,6 +17,9 @@ import lombok.NoArgsConstructor;
 public class DeletePostInDto {
 
 	@NotNull
-	Long userPostId;
+	private Long userPostId;
+
+	@NotNull
+	private UUID userUuid;
 
 }

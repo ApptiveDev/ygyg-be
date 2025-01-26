@@ -4,6 +4,8 @@ package foiegras.ygyg.post.application.dto.post.in;
 import foiegras.ygyg.post.application.dto.userpost.in.UserPostDataInDto;
 import lombok.*;
 
+import java.util.UUID;
+
 
 @Getter
 @Builder(toBuilder = true)
@@ -12,7 +14,9 @@ import lombok.*;
 @ToString
 public class UpdatePostInDto {
 
-	Long userPostId;
+	private Long userPostId;
+	
+	private UUID userUuid;
 
 	private UserPostDataInDto userPostDataInDto;
 
