@@ -3,11 +3,10 @@ package foiegras.ygyg.post.application.service;
 
 import foiegras.ygyg.global.common.exception.BaseException;
 import foiegras.ygyg.global.common.response.BaseResponseStatus;
+import foiegras.ygyg.post.application.dto.userpost.in.GetMyPostListInDto;
 import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListByCategoryInDto;
 import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListInDto;
-import foiegras.ygyg.post.application.dto.userpost.out.GetUserPostListOutDto;
-import foiegras.ygyg.post.application.dto.userpost.out.PageInfoDto;
-import foiegras.ygyg.post.application.dto.userpost.out.UserPostItemDto;
+import foiegras.ygyg.post.application.dto.userpost.out.*;
 import foiegras.ygyg.post.infrastructure.entity.ItemImageUrlEntity;
 import foiegras.ygyg.post.infrastructure.entity.PostEntity;
 import foiegras.ygyg.post.infrastructure.entity.SeasoningCategoryEntity;
@@ -58,6 +57,7 @@ public class UserPostService {
 	 * 5. 작성자 UUID로 진행중인 소분글 조회
 	 * 6. 소분글 리스트 조회
 	 * 7. 카테고리로 소분글 리스트 조회
+	 * 8. 타입별 내 소분글 리스트 조회
 	 */
 
 	// 1. id로 UserPost 조회
@@ -170,6 +170,18 @@ public class UserPostService {
 			.maxEngageCount(postEntity.getMaxEngageCount())
 			.currentEngageCount(postEntity.getCurrentEngageCount())
 			.imageUrl(imageUrl).build();
+	}
+
+
+	// 8. 타입별 내 소분글 리스트 조회
+	public GetUserPostListByCursorOutDto getMyPostListByType(GetMyPostListInDto inDto) {
+		UserPostListQueryDataByCursorOutDto queryData = userPostQueryDslRepository.findPostListByCursor(inDto);
+		return GetUserPostListByCursorOutDto.builder()
+			.content(queryData.getContent())
+			.hasNext(queryData.hasNext())
+			.pageable(queryData.getPageable())
+			.lastCursor(queryData.getLastCursor())
+			.build();
 	}
 
 }
