@@ -19,6 +19,6 @@ public class GetPostOutDto {
 	private String imageUrl;
 	private String unitName;
 	private String categoryName;
-	private Boolean writerActiveState;
+	private Boolean userParticipatingIn;
 
 }
