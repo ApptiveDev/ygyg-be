@@ -1,6 +1,7 @@
 package foiegras.ygyg.global.common.security.jwt;
 
 
+import foiegras.ygyg.global.common.wrapper.CachingRequestWrapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,29 +40,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		FilterChain filterChain
 
 	) throws ServletException, IOException {
-		final String authHeader = request.getHeader("Authorization"); // HTTP 요청 헤더에서 "Authorization" 값을 가져옴
-		final String jwt; // header에서 가져올 jwt 토큰값
-		final String userUUID; // jwt 토큰에서 가져올 사용자 UUID
+		// 요청을 CachingRequestWrapper로 감싸서, 여러번 요청을 받아도 문제가 없도록 함
+		CachingRequestWrapper requestWrapper = new CachingRequestWrapper(request);
+		// 각종 변수 설정
+		final String authHeader = requestWrapper.getHeader("Authorization"); // HTTP 요청 헤더에서 "Authorization" 값을 가져옴
 
 		/**
+		 * 토큰 유효성 검사 및 인증 정보 저장 로직
 		 * 1. 헤더가 null이거나, "Bearer"로 시작하지 않는다면, 로그인 에러를 발생
 		 * 2. 유효성 검사 & JWT 토큰에서 사용자 email을 가져옴
 		 * 3. 중복되지 않았다면 ContextHolder에 유저 정보를 담음 (여기선 userUuid가 담김)
 		 */
 
 		// 1. 헤더가 null이거나, "Bearer"로 시작하지 않는다면 pass
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			filterChain.doFilter(request, response);
+		if (!this.checkHeader(authHeader)) {
+			filterChain.doFilter(requestWrapper, response);
 			return;
 		}
 
 		// 2. 유효성 검사 & JWT 토큰에서 사용자 email을 가져옴
-		jwt = authHeader.substring(7); // "Bearer " 제외
-		userUUID = jwtTokenProvider.validateAndGetUserUuid(jwt);
+		String userUUID = this.validateAndExtractUuid(authHeader);
 
 		// 3. 중복되지 않았다면 ContextHolder에 유저 정보를 담음 (여기선 userUuid가 담김)
+		this.setUserDataToSecurityContextHolder(userUUID, requestWrapper);
+
+		// ContextHolder에 유저 정보를 저장 후, 다음 필터로 요청과 응답을 전달
+		filterChain.doFilter(requestWrapper, response);
+	}
+
+
+	// 2. 헤더 검사
+	private boolean checkHeader(String authHeader) {
+		return authHeader != null && authHeader.startsWith("Bearer ");
+	}
+
+
+	// 3. 유효성 검사 & 토큰에서 사용자 UUID 추출
+	private String validateAndExtractUuid(String authHeader) {
+		return jwtTokenProvider.validateAndGetUserUuid(authHeader.substring(7));
+	}
+
+
+	// 4. ContextHolder에 유저 정보 저장
+	private void setUserDataToSecurityContextHolder(String userUUID, CachingRequestWrapper requestWrapper) {
 		if (SecurityContextHolder.getContext().getAuthentication() == null) {
-			// uuid 기반으로 사용자 정보를 가져옴
+			// userEmail 기반으로 사용자 정보를 가져옴
 			UserDetails userDetails = this.userDetailsService.loadUserByUsername(userUUID);
 			// 인증 정보를 생성하고 Security Context에 유저 정보를 설정 -> (principal, credentials, authorities) 순서로 들어감
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -70,13 +93,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				userDetails.getAuthorities());
 			// 현재 요청에 대한 세부 정보를 인증 토큰에 설정
 			authenticationToken.setDetails(
-				new WebAuthenticationDetailsSource().buildDetails(request));
+				new WebAuthenticationDetailsSource().buildDetails(requestWrapper));
 			// 인증 토큰을 Security Context에 설정
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 		}
-
-		// ContextHolder에 유저 정보를 저장 후, 다음 필터로 요청과 응답을 전달
-		filterChain.doFilter(request, response);
 	}
 
 }
