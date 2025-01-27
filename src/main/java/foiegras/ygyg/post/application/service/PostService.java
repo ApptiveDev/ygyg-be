@@ -10,6 +10,7 @@ import foiegras.ygyg.post.application.dto.userpost.in.UserPostDataInDto;
 import foiegras.ygyg.post.application.dto.userpost.out.UserPostDataOutDto;
 import foiegras.ygyg.post.infrastructure.entity.*;
 import foiegras.ygyg.post.infrastructure.jpa.post.*;
+import foiegras.ygyg.user.infrastructure.entity.UserEntity;
 import foiegras.ygyg.user.infrastructure.jpa.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -103,37 +105,30 @@ public class PostService {
 		// 연관 엔티티들 조회
 		UserPostEntity userPostEntity = userPostJpaRepository.findById(inDto.getUserPostId())
 			.orElseThrow(() -> new BaseException(BaseResponseStatus.NO_EXIST_USER_POST_ENTITY));
-
-		List<ParticipatingUsersEntity> participatingUsersEntity = participatingUsersJpaRepository.findByUserPostEntity(userPostEntity);
-		if (participatingUsersEntity.isEmpty()) throw new BaseException(BaseResponseStatus.NO_EXIST_PARTICIPATING_USERS);
-
 		PostEntity postEntity = userPostEntity.getPostEntity();
-
 		List<ItemImageUrlEntity> itemImageUrlEntity = itemImageUrlJpaRepository.findByPostEntity(postEntity);
 		if (itemImageUrlEntity.isEmpty()) throw new BaseException(BaseResponseStatus.NO_EXIST_ITEM_IMAGE_URL_ENTITY);
 
 		// outdto 필드들 구성
 		UserPostDataOutDto userPostDataOutDto = modelMapper.map(userPostEntity, UserPostDataOutDto.class);
-		if (userJpaRepository.findByUserUuid(userPostDataOutDto.getWriterUuid()).isEmpty()) {
-			// 소분글 작성자가 탈퇴유저라면 UUID를 null로 설정
-			// todo: post 도메인에서 user 도메인 의존하는 부분 리팩토링
-			userPostDataOutDto.toBuilder().writerUuid(null).build();
-		}
 		PostDataOutDto postDataOutDto = modelMapper.map(postEntity, PostDataOutDto.class);
-		String imageUrl = itemImageUrlEntity.get(0).getImageUrl(); // 아직은 이미지 한개만 첨부하므로
-		String unitName = postEntity.getItemPortioningUnitEntity().getUnit();
-		String categoryName = userPostEntity.getSeasoningCategoryEntity().getCategoryName();
 		Boolean userParticipatingIn = participatingUsersJpaRepository
 			.findByUserPostEntityAndParticipatingUserUUID(userPostEntity, inDto.getUserUuid()).isPresent();
+
+		// todo: post 도메인에서 user 도메인 의존하는 부분 리팩토링
+		// 소분글 작성자가 탈퇴유저라면 작성자 UUID null로 설정
+		Optional<UserEntity> postWriterEntity = userJpaRepository.findByUserUuid(userPostEntity.getWriterUuid());
+		if (postWriterEntity.isEmpty()) userPostDataOutDto = userPostDataOutDto.toBuilder().writerUuid(null).build();
 
 		// 리턴할 OutDto 매핑
 		return GetPostOutDto.builder()
 			.userPostDataOutDto(userPostDataOutDto)
 			.postDataOutDto(postDataOutDto)
-			.imageUrl(imageUrl)
-			.unitName(unitName)
-			.categoryName(categoryName)
+			.imageUrl(itemImageUrlEntity.get(0).getImageUrl())
+			.unitName(postEntity.getItemPortioningUnitEntity().getUnit())
+			.categoryName(userPostEntity.getSeasoningCategoryEntity().getCategoryName())
 			.userParticipatingIn(userParticipatingIn)
+			.userNickname(postWriterEntity.map(UserEntity::getUserNickname).orElse(null))
 			.build();
 
 	}
