@@ -15,5 +15,6 @@ public class GetPostResponse {
 	private String unitName;
 	private String categoryName;
 	private Boolean userParticipatingIn;
+	private String userNickname;
 
 }
