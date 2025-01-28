@@ -206,6 +206,17 @@ public class PostService {
 		return postEntity.updateCurrentEngageCount(type);
 	}
 
+
+	// 6. 만료된 소분글 삭제
+	// todo: 메서드 분리
+	public void deleteExpiredPosts(UserPostEntity userPostEntity) {
+		PostEntity postEntity = userPostEntity.getPostEntity();
+		itemImageUrlJpaRepository.deleteByPostEntity(postEntity);
+		participatingUsersJpaRepository.deleteByUserPostEntity(userPostEntity);
+		userPostJpaRepository.delete(userPostEntity);
+		postJpaRepository.delete(postEntity);
+	}
+
 }
 
 
