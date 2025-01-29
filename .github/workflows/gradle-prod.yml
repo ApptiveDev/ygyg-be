@@ -116,10 +116,10 @@ jobs:
             sudo docker rm "${{ secrets.SERVICE_NAME }}" || true
             sudo docker pull "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PRODUCTION_REPO }}":$((${github.run_number}-1))
             sudo docker run -d \
-              -e "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
-              -e "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" \
-              -e "AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}" \
-              -e "AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }}" \
-              -e "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
+              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+              -e AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
+              -e AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
+              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
               --name "${{ secrets.SERVICE_NAME }}" -p "${{ secrets.PRODUCTION_SERVICE_PORT }}":"${{ secrets.PRODUCTION_SERVICE_PORT }}" --network "${{ secrets.PRODUCTION_DOCKER_NETWORK }}" "${{ secrets.DOCKER_USERNAME }}"/"${{ secrets.PRODUCTION_REPO }}":$((${github.run_number}-1))
             sudo docker image prune -a -f
