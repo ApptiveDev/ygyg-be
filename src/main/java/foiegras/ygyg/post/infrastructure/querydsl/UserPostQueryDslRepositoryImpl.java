@@ -83,6 +83,7 @@ public class UserPostQueryDslRepositoryImpl implements UserPostQueryDslRepositor
 					booleanExpression.selectType(inDto.getType(), inDto.getUserUuid(), inDto.getCurrentTime()),
 					booleanExpression.getNextUserPost(inDto.getLastCursor(), inDto.getOrder()))
 				.orderBy(inDto.getOrder().equals(ASC) ? userPostEntity.id.asc() : userPostEntity.id.desc())
+				.distinct()
 				.limit(pageable.getPageSize() + 1) // 다음 페이지 여부 확인을 위해 +1개 조회
 				.fetch();
 		// 다음 페이지 여부 확인 & content에서 마지막 값 제거, result = {hasNext, content}
