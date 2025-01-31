@@ -1,6 +1,8 @@
 package foiegras.ygyg.global.common.querydsl;
 
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import foiegras.ygyg.post.infrastructure.entity.QItemImageUrlEntity;
 import foiegras.ygyg.post.infrastructure.entity.QParticipatingUsersEntity;
@@ -13,7 +15,7 @@ import java.util.UUID;
 
 
 @Component
-public class PostDomainBooleanExpression {
+public class PostDomainQueryDslUtil {
 
 	// query dsl value
 	private final static QUserPostEntity userPostEntity = QUserPostEntity.userPostEntity;
@@ -32,6 +34,8 @@ public class PostDomainBooleanExpression {
 	 * Post 도메인의 BooleanExpressions
 	 * 1. cursor로 다음 userPost 조회
 	 * 2. 타입별 userPost 조회
+	 * 3. 타입별 정렬 기준 설정
+	 * 4. 최소 참여인원 달성한 소분글만 조회 여부
 	 */
 
 	// 1. cursor로 다음 userPost 조회
@@ -57,6 +61,23 @@ public class PostDomainBooleanExpression {
 			case COMPLETE -> join.and(afterComplete);
 			default -> null;
 		};
+	}
+
+
+	// 3. 타입별 정렬 기준 설정
+	public OrderSpecifier<?> getSortBy(String sortBy) {
+		return switch (sortBy) {
+			case "soonest" -> userPostEntity.portioningDate.asc();
+			case "lowestPrice" -> userPostEntity.expectedMinimumPrice.asc();
+			case "lowestRemain" -> userPostEntity.remainCount.asc();
+			default -> userPostEntity.id.desc();
+		};
+	}
+
+
+	// 4. 최소 참여인원 달성한 소분글만 조회 여부
+	public Predicate isMinimumPeopleMet(Boolean isMinimumPeopleMet) {
+		return isMinimumPeopleMet ? userPostEntity.isFullMinimum.eq(true) : null;
 	}
 
 }
