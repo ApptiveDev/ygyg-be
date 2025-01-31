@@ -6,6 +6,7 @@ import foiegras.ygyg.global.common.response.BaseResponseStatus;
 import foiegras.ygyg.post.application.dto.userpost.in.GetMyPostListInDto;
 import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListByCategoryInDto;
 import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListInDto;
+import foiegras.ygyg.post.application.dto.userpost.in.SearchPostInDto;
 import foiegras.ygyg.post.application.dto.userpost.out.*;
 import foiegras.ygyg.post.infrastructure.entity.ItemImageUrlEntity;
 import foiegras.ygyg.post.infrastructure.entity.PostEntity;
@@ -58,6 +59,7 @@ public class UserPostService {
 	 * 6. 소분글 리스트 조회
 	 * 7. 카테고리로 소분글 리스트 조회
 	 * 8. 타입별 내 소분글 리스트 조회
+	 * 9. 카테고리 및 검색어로 소분글 리스트 조회
 	 */
 
 	// 1. id로 UserPost 조회
@@ -181,6 +183,24 @@ public class UserPostService {
 			.hasNext(queryData.hasNext())
 			.pageable(queryData.getPageable())
 			.lastCursor(queryData.getLastCursor())
+			.build();
+	}
+
+
+	// 9. 검색어로 소분글 리스트 조회
+	public GetUserPostListOutDto searchPost(SearchPostInDto inDto) {
+		Pageable basePageable = inDto.getPageable();
+		Pageable newPageable = PageRequest.of(basePageable.getPageNumber(), basePageable.getPageSize(), createSortBy(inDto.getSortBy()));
+		Page<UserPostEntity> result = userPostQueryDslRepository.searchPost(inDto, newPageable);
+		return GetUserPostListOutDto.builder()
+			.items(result.getContent().stream()
+				.map(this::convertToListItemDto)
+				.toList())
+			.pageInfoDto(PageInfoDto.builder()
+				.totalItemsLength(result.getTotalElements())
+				.currentPage(result.getNumber() + 1)
+				.size(result.getContent().size())
+				.build())
 			.build();
 	}
 
