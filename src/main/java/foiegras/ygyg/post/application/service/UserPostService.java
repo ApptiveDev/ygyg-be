@@ -99,8 +99,13 @@ public class UserPostService {
 		Pageable newPageable = inDto.getPageable();
 		Pageable pageable = PageRequest.of(newPageable.getPageNumber(), newPageable.getPageSize(), createSortBy(inDto.getSortBy()));
 
-		// userPost 엔티티 페이지 목록 조회
-		Page<UserPostEntity> userPostEntityPage = userPostJpaRepository.findAll(pageable);
+		// 최소소분인원 충족여부에 알맞은 userPost 엔티티 페이지 목록 조회
+		Page<UserPostEntity> userPostEntityPage;
+		if (inDto.getIsMinimumPeopleMet().equals(true)) {
+			userPostEntityPage = userPostJpaRepository.findByIsFullMinimumTrue(pageable);
+		} else {
+			userPostEntityPage = userPostJpaRepository.findAll(pageable);
+		}
 
 		// 정렬 기준에 맞게 가져온 userPostEntities가 담긴 배열을 stream.map()으로 PostListItemDto로 변경
 		List<UserPostItemDto> items = userPostEntityPage.getContent().stream()
@@ -109,7 +114,7 @@ public class UserPostService {
 		PageInfoDto pageInfoDto = PageInfoDto.builder()
 			.totalItemsLength(userPostEntityPage.getTotalElements())
 			.currentPage(userPostEntityPage.getNumber() + 1)
-			.size(userPostEntityPage.getSize()).build();
+			.size(userPostEntityPage.getContent().size()).build();
 
 		return GetUserPostListOutDto.builder()
 			.items(items)
@@ -126,9 +131,12 @@ public class UserPostService {
 
 		Pageable pageable = PageRequest.of(newPageable.getPageNumber(), newPageable.getPageSize(), createSortBy(inDto.getSortBy()));
 
-		// 쿼리 메서드로 카테고리 객체의 id와 동일한 userpost 가져오기
-		Page<UserPostEntity> userPostEntityPage = userPostJpaRepository
-			.findAllBySeasoningCategoryEntityId(seasoningCategoryEntity.getId(), pageable);
+		Page<UserPostEntity> userPostEntityPage;
+		if (inDto.getIsMinimumPeopleMet().equals(true)) {
+			userPostEntityPage = userPostJpaRepository.findAllBySeasoningCategoryEntityIdAndIsFullMinimumTrue(seasoningCategoryEntity.getId(), pageable);
+		} else {
+			userPostEntityPage = userPostJpaRepository.findAllBySeasoningCategoryEntityId(seasoningCategoryEntity.getId(), pageable);
+		}
 
 		List<UserPostItemDto> items = userPostEntityPage.getContent().stream()
 			.map(this::convertToListItemDto).toList();
@@ -136,7 +144,7 @@ public class UserPostService {
 		PageInfoDto pageInfoDto = PageInfoDto.builder()
 			.totalItemsLength(userPostEntityPage.getTotalElements())
 			.currentPage(userPostEntityPage.getNumber() + 1)
-			.size(userPostEntityPage.getSize()).build();
+			.size(userPostEntityPage.getContent().size()).build();
 
 		return GetUserPostListOutDto.builder()
 			.items(items)

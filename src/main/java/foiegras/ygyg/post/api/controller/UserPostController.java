@@ -59,8 +59,9 @@ public class UserPostController {
 	// 2. 소분글 전체목록 조회
 	@Operation(summary = "소분글 전체목록 조회", description = "소분글 전체목록 조회", tags = { "Post" })
 	@GetMapping("/list")
-	public BaseResponse<GetUserPostListResponse> getPostList(@RequestParam(name = "sortBy") String sortBy, @PageableDefault(size = 9) Pageable pageable) {
-		GetUserPostListOutDto outDto = userPostService.getUserPostList(new GetUserPostListInDto(sortBy, pageable));
+	public BaseResponse<GetUserPostListResponse> getPostList(@RequestParam(name = "sortBy") String sortBy,
+		@PageableDefault(size = 9) Pageable pageable, @RequestParam(name = "isMinimumPeopleMet") Boolean isMinimumPeopleMet) {
+		GetUserPostListOutDto outDto = userPostService.getUserPostList(new GetUserPostListInDto(sortBy, isMinimumPeopleMet, pageable));
 		GetUserPostListResponse response = modelMapper.map(outDto, GetUserPostListResponse.class);
 		return new BaseResponse<>(response);
 	}
@@ -70,8 +71,8 @@ public class UserPostController {
 	@Operation(summary = "소분글 카테고리별 목록 조회", description = "소분글 카테고리별 목록 조회", tags = { "Post" })
 	@GetMapping("/list/{categoryId}")
 	public BaseResponse<GetUserPostListResponse> getPostList(@PathVariable Integer categoryId,
-		@RequestParam(name = "sortBy") String sortBy, @PageableDefault(size = 9) Pageable pageable) {
-		GetUserPostListOutDto outDto = userPostService.getUserPostListByCategory(new GetUserPostListByCategoryInDto(categoryId, sortBy, pageable));
+		@RequestParam(name = "sortBy") String sortBy, @PageableDefault(size = 9) Pageable pageable, @RequestParam(name = "isMinimumPeopleMet") Boolean isMinimumPeopleMet) {
+		GetUserPostListOutDto outDto = userPostService.getUserPostListByCategory(new GetUserPostListByCategoryInDto(categoryId, sortBy, isMinimumPeopleMet, pageable));
 		GetUserPostListResponse response = modelMapper.map(outDto, GetUserPostListResponse.class);
 		return new BaseResponse<>(response);
 	}
