@@ -69,7 +69,7 @@ public class SecurityConfig {
 	private static final RequestMatcher[] postUrl = new RequestMatcher[] {
 		new AntPathRequestMatcher("/api/v1/post/list", GET),
 		new AntPathRequestMatcher("/api/v1/post/list/**", GET),
-
+		new AntPathRequestMatcher("/api/v1/post/search", GET),
 	};
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;

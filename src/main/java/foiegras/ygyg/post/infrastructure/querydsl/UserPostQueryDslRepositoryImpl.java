@@ -3,14 +3,17 @@ package foiegras.ygyg.post.infrastructure.querydsl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import foiegras.ygyg.global.common.querydsl.PostDomainBooleanExpression;
+import foiegras.ygyg.global.common.querydsl.PostDomainQueryDslUtil;
 import foiegras.ygyg.global.common.querydsl.QueryDslService;
 import foiegras.ygyg.post.application.dto.userpost.in.GetMyPostListInDto;
+import foiegras.ygyg.post.application.dto.userpost.in.SearchPostInDto;
 import foiegras.ygyg.post.application.dto.userpost.out.UserPostItemDto;
 import foiegras.ygyg.post.application.dto.userpost.out.UserPostListQueryDataByCursorOutDto;
 import foiegras.ygyg.post.infrastructure.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
@@ -35,7 +38,7 @@ public class UserPostQueryDslRepositoryImpl implements UserPostQueryDslRepositor
 	private final static String DESC = "desc";
 	// querydsl
 	private final JPAQueryFactory queryFactory;
-	private final PostDomainBooleanExpression booleanExpression;
+	private final PostDomainQueryDslUtil queryDslUtil;
 	private final QueryDslService queryDslService;
 
 
@@ -43,6 +46,7 @@ public class UserPostQueryDslRepositoryImpl implements UserPostQueryDslRepositor
 	 * UserPostQueryDslRepository
 	 * 1. 유저 UUID로, 유저가 참여한 진행중인 소분글 조회
 	 * 2. 유저 UUID로, 타입별 소분글 조회
+	 * 3. 키워드로 소분글 검색
 	 */
 
 	// 1. 유저 UUID로, 유저가 참여한 진행중인 소분글 조회
@@ -80,8 +84,8 @@ public class UserPostQueryDslRepositoryImpl implements UserPostQueryDslRepositor
 				.leftJoin(itemImageUrlEntity).on(itemImageUrlEntity.postEntity.id.eq(postEntity.id)).limit(1)
 				.leftJoin(participatingUsersEntity).on(participatingUsersEntity.userPostEntity.id.eq(userPostEntity.id))
 				.where(
-					booleanExpression.selectType(inDto.getType(), inDto.getUserUuid(), inDto.getCurrentTime()),
-					booleanExpression.getNextUserPost(inDto.getLastCursor(), inDto.getOrder()))
+					queryDslUtil.selectType(inDto.getType(), inDto.getUserUuid(), inDto.getCurrentTime()),
+					queryDslUtil.getNextUserPost(inDto.getLastCursor(), inDto.getOrder()))
 				.orderBy(inDto.getOrder().equals(ASC) ? userPostEntity.id.asc() : userPostEntity.id.desc())
 				.distinct()
 				.limit(pageable.getPageSize() + 1) // 다음 페이지 여부 확인을 위해 +1개 조회
@@ -94,6 +98,37 @@ public class UserPostQueryDslRepositoryImpl implements UserPostQueryDslRepositor
 		Long lastCursorId = queryDslService.getLastCursor(finalContent);
 		// result = content, pageable, hasNext, lastCursorId
 		return new UserPostListQueryDataByCursorOutDto(finalContent, pageable, hasNext, lastCursorId);
+	}
+
+
+	// 3. 키워드로 소분글 검색
+	@Override
+	public Page<UserPostEntity> searchPost(SearchPostInDto inDto, Pageable pageable) {
+		// content limited by size
+		List<UserPostEntity> content = queryFactory
+			.selectFrom(userPostEntity)
+			.join(postEntity).on(postEntity.id.eq(userPostEntity.postEntity.id))
+			.where(
+				userPostEntity.postTitle.contains(inDto.getKeyword()),
+				queryDslUtil.isMinimumPeopleMet(inDto.getIsMinimumPeopleMet())
+			)
+			.orderBy(queryDslUtil.getSortBy(inDto.getSortBy()))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+		// total contents count
+		Long totalResult = queryFactory
+			.select(userPostEntity.count())
+			.from(userPostEntity)
+			.join(postEntity).on(postEntity.id.eq(userPostEntity.postEntity.id))
+			.where(
+				userPostEntity.postTitle.contains(inDto.getKeyword()),
+				queryDslUtil.isMinimumPeopleMet(inDto.getIsMinimumPeopleMet())
+			)
+			.fetchOne();
+		long total = totalResult != null ? totalResult : 0;
+		// result
+		return new PageImpl<>(content, pageable, total);
 	}
 
 }
