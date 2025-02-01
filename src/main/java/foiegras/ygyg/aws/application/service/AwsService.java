@@ -3,6 +3,7 @@ package foiegras.ygyg.aws.application.service;
 
 import foiegras.ygyg.aws.application.dto.in.GetPutObjectPreSignedUrlInDto;
 import foiegras.ygyg.aws.application.dto.out.GetPutObjectPreSignedUrlOutDto;
+import io.awspring.cloud.s3.S3Template;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,12 @@ import java.time.Duration;
 public class AwsService {
 
 	// aws
+	private final S3Template s3Template;
 	private final S3Presigner s3Presigner;
+
 	@Value("${aws.s3.bucket}")
 	private String bucket;
+
 	@Value("${aws.s3.duration}")
 	private Long duration;
 
@@ -28,6 +32,7 @@ public class AwsService {
 	/**
 	 * AwsService
 	 * 1. S3 PutObject PreSigned URL 생성
+	 * 2. S3 Delete Object
 	 */
 
 	// 1. S3 PutObject PreSigned URL 생성
@@ -46,6 +51,12 @@ public class AwsService {
 			.putObjectRequest(putObjectRequest)
 			.build();
 		return new GetPutObjectPreSignedUrlOutDto(s3Presigner.presignPutObject(preSignRequest).url().toString());
+	}
+
+
+	// 2. S3 Delete Object: key = email + "-" + fileName
+	public void deleteObject(String key) {
+		s3Template.deleteObject(bucket, key);
 	}
 
 }

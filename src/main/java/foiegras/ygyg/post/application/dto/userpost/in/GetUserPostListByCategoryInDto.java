@@ -14,6 +14,7 @@ public class GetUserPostListByCategoryInDto {
 
 	private Integer categoryId;
 	private String sortBy;
+	private Boolean isMinimumPeopleMet;
 	private Pageable pageable;
 
 }

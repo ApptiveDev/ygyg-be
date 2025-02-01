@@ -11,4 +11,8 @@ public interface UserPostJpaRepository extends JpaRepository<UserPostEntity, Lon
 
 	Page<UserPostEntity> findAllBySeasoningCategoryEntityId(Integer categoryId, Pageable pageable);
 
+	Page<UserPostEntity> findByIsFullMinimumTrue(Pageable pageable);
+
+	Page<UserPostEntity> findAllBySeasoningCategoryEntityIdAndIsFullMinimumTrue(Integer categoryId, Pageable pageable);
+
 }

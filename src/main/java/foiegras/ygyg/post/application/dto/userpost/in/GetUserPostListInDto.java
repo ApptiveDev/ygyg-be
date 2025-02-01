@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 public class GetUserPostListInDto {
 
 	private String sortBy;
+	private Boolean isMinimumPeopleMet;
 	private Pageable pageable;
 
 }

@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Validated
@@ -34,12 +32,13 @@ public class AwsController {
 
 	/**
 	 * AwsController
-	 * 1. S3 PreSigned URL 생성
+	 * 1. S3 Put Object PreSigned URL 생성
+	 * 2. S3 Delete Object
 	 */
 
-	// 1. S3 PreSigned URL 생성
-	@Operation(summary = "S3 PreSigned URL 생성", description = "S3 PreSigned URL 생성", tags = { "Aws" })
-	@GetMapping("/presigned-url")
+	// 1. S3 Put Object PreSigned URL 생성
+	@Operation(summary = "S3 Put Object PreSigned URL 생성", description = "S3 Put Object PreSigned URL 생성", tags = { "Aws" })
+	@GetMapping("/presigned-url/put")
 	@SecurityRequirement(name = "Bearer Auth")
 	public BaseResponse<GetPreSignedUrlResponse> getPutObjectPreSignedUrl(@Valid GetPutObjectPreSignedUrlRequest request, @AuthenticationPrincipal CustomUserDetails authentication) {
 		GetPutObjectPreSignedUrlInDto inDto = modelMapper.map(request, GetPutObjectPreSignedUrlInDto.class);
@@ -48,6 +47,16 @@ public class AwsController {
 			.build();
 		GetPutObjectPreSignedUrlOutDto outDto = awsService.getPutObjectPreSignedUrl(inDto);
 		return new BaseResponse<>(modelMapper.map(outDto, GetPreSignedUrlResponse.class));
+	}
+
+
+	// 2. S3 Delete Object
+	@Operation(summary = "S3 Delete Object", description = "S3에서 객체 삭제", tags = { "Aws" })
+	@DeleteMapping("/s3/{imagePath}")
+	@SecurityRequirement(name = "Bearer Auth")
+	public BaseResponse<Void> deleteObject(@PathVariable("imagePath") String imagePath) {
+		awsService.deleteObject(imagePath);
+		return new BaseResponse<>();
 	}
 
 }
