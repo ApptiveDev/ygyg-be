@@ -57,8 +57,9 @@ public class JoinPortioningFacade {
 		if (participatingUserService.checkParticipatedState(participantUuid, userPost)) {
 			throw new BaseException(BaseResponseStatus.ALREADY_PARTICIPATED);
 		}
-		// 참여 가능 인원수가 0보다 큰 경우(참여 가능한 경우) 참여
-		if (userPost.getRemainCount() > 0) {
+		// 현인원이 최대소분인원 이내일 경우(=소분 참여 가능한 경우)
+		PostEntity post = userPost.getPostEntity();
+		if (post.getMaxEngageCount() > post.getCurrentEngageCount()) {
 			// 현재 참여자 수 증가
 			PostEntity updatedPost = postService.updateCurrentEngageCount(userPost.getPostEntity(), JOIN);
 			// 소분글 참여
