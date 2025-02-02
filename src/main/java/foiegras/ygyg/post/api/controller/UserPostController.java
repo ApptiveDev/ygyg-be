@@ -6,10 +6,7 @@ import foiegras.ygyg.global.common.security.CustomUserDetails;
 import foiegras.ygyg.post.api.request.GetMyPostListRequest;
 import foiegras.ygyg.post.api.response.GetUserPostListByCursorResponse;
 import foiegras.ygyg.post.api.response.GetUserPostListResponse;
-import foiegras.ygyg.post.application.dto.userpost.in.GetMyPostListInDto;
-import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListByCategoryInDto;
-import foiegras.ygyg.post.application.dto.userpost.in.GetUserPostListInDto;
-import foiegras.ygyg.post.application.dto.userpost.in.JoinPortioningInDto;
+import foiegras.ygyg.post.application.dto.userpost.in.*;
 import foiegras.ygyg.post.application.dto.userpost.out.GetUserPostListByCursorOutDto;
 import foiegras.ygyg.post.application.dto.userpost.out.GetUserPostListOutDto;
 import foiegras.ygyg.post.application.facade.JoinPortioningFacade;
@@ -44,6 +41,7 @@ public class UserPostController {
 	 * 2. 소분글 전체목록 조회
 	 * 3. 소분글 카테고리별 목록 조회
 	 * 4. 타입별 소분글 목록 조회
+	 * 5. 제목으로 소분글 검색
 	 */
 
 	// 1. 소분글 참여하기
@@ -59,8 +57,9 @@ public class UserPostController {
 	// 2. 소분글 전체목록 조회
 	@Operation(summary = "소분글 전체목록 조회", description = "소분글 전체목록 조회", tags = { "Post" })
 	@GetMapping("/list")
-	public BaseResponse<GetUserPostListResponse> getPostList(@RequestParam(name = "sortBy") String sortBy, @PageableDefault(size = 9) Pageable pageable) {
-		GetUserPostListOutDto outDto = userPostService.getUserPostList(new GetUserPostListInDto(sortBy, pageable));
+	public BaseResponse<GetUserPostListResponse> getPostList(@RequestParam(name = "sortBy") String sortBy,
+		@PageableDefault(size = 9) Pageable pageable, @RequestParam(name = "isMinimumPeopleMet") Boolean isMinimumPeopleMet) {
+		GetUserPostListOutDto outDto = userPostService.getUserPostList(new GetUserPostListInDto(sortBy, isMinimumPeopleMet, pageable));
 		GetUserPostListResponse response = modelMapper.map(outDto, GetUserPostListResponse.class);
 		return new BaseResponse<>(response);
 	}
@@ -70,8 +69,8 @@ public class UserPostController {
 	@Operation(summary = "소분글 카테고리별 목록 조회", description = "소분글 카테고리별 목록 조회", tags = { "Post" })
 	@GetMapping("/list/{categoryId}")
 	public BaseResponse<GetUserPostListResponse> getPostList(@PathVariable Integer categoryId,
-		@RequestParam(name = "sortBy") String sortBy, @PageableDefault(size = 9) Pageable pageable) {
-		GetUserPostListOutDto outDto = userPostService.getUserPostListByCategory(new GetUserPostListByCategoryInDto(categoryId, sortBy, pageable));
+		@RequestParam(name = "sortBy") String sortBy, @PageableDefault(size = 9) Pageable pageable, @RequestParam(name = "isMinimumPeopleMet") Boolean isMinimumPeopleMet) {
+		GetUserPostListOutDto outDto = userPostService.getUserPostListByCategory(new GetUserPostListByCategoryInDto(categoryId, sortBy, isMinimumPeopleMet, pageable));
 		GetUserPostListResponse response = modelMapper.map(outDto, GetUserPostListResponse.class);
 		return new BaseResponse<>(response);
 	}
@@ -91,6 +90,23 @@ public class UserPostController {
 		GetUserPostListByCursorOutDto outDto = userPostService.getMyPostListByType(inDto);
 		GetUserPostListByCursorResponse response = modelMapper.map(outDto, GetUserPostListByCursorResponse.class);
 		return new BaseResponse<>(response.toBuilder().myPost(outDto.getContent()).build());
+	}
+
+
+	// 5. 제목으로 소분글 검색
+	@Operation(summary = "제목으로 소분글 검색", description = "제목으로 소분글 목록을 조회한다. sortBy type은 latest, soonest, lowestPrice, lowestRemain 네 가지중 하나를 택한다", tags = { "Post" })
+	@GetMapping("/search")
+	public BaseResponse<GetUserPostListResponse> searchPostList(@RequestParam(name = "keyword") String keyword, @RequestParam(name = "isMinimumPeopleMet") Boolean isMinimumPeopleMet,
+		@RequestParam(name = "sortBy") String sortBy, @PageableDefault(size = 9) Pageable pageable) {
+		SearchPostInDto inDto = SearchPostInDto.builder()
+			.keyword(keyword)
+			.isMinimumPeopleMet(isMinimumPeopleMet)
+			.sortBy(sortBy)
+			.pageable(pageable)
+			.build();
+		GetUserPostListOutDto outDto = userPostService.searchPost(inDto);
+		GetUserPostListResponse response = modelMapper.map(outDto, GetUserPostListResponse.class);
+		return new BaseResponse<>(response);
 	}
 
 }

@@ -1,19 +1,18 @@
 package foiegras.ygyg.post.application.dto.userpost.in;
 
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class GetUserPostListInDto {
+@Builder
+public class SearchPostInDto {
 
+	private String keyword;
 	private String sortBy;
-	private Boolean isMinimumPeopleMet;
 	private Pageable pageable;
+	private Boolean isMinimumPeopleMet;
 
 }

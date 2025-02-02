@@ -19,4 +19,9 @@ public interface UserPostJpaRepository extends JpaRepository<UserPostEntity, Lon
 		+ "AND is_full_minimum = false", nativeQuery = true)
 	List<UserPostEntity> findExpiredPosts();
 
+  Page<UserPostEntity> findByIsFullMinimumTrue(Pageable pageable);
+
+	Page<UserPostEntity> findAllBySeasoningCategoryEntityIdAndIsFullMinimumTrue(Integer categoryId, Pageable pageable);
+
+
 }
