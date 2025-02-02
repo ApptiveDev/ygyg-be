@@ -52,14 +52,15 @@ public class UserPostEntity extends BaseTimeEntity {
 	@Column(name = "expected_minimun_price", nullable = false)
 	private Integer expectedMinimumPrice;
 
-	// 남은 참여가능 인원수 = 최대인원 - 현재인원으로 계산해 넣기
-	// 남은 인원 적은 수 순 정렬에 쓰임, 작성자 상시 포함이라 1명으로 초기화
-	// db에 넣을 때는 "--최대참여인원" 으로 넣어야 함 for 게시자 1명 기본 카운트
+	// 최소소분인원 도달에 남은 인원: [최소인원 - 현재인원]으로 계산하되 음수가 안되게 주의
+	// 남은 인원 적은 수 순 정렬에 쓰임
+	// 게시자 1명 고려해 db에 넣을 때는 "--최소소분인원" 으로 넣어야 함
 	@Column(name = "remain_count", nullable = false, columnDefinition = "TINYINT")
 	private Integer remainCount;
 
 	// 필터링 -> 최소 참여 달성된 글만 보기
-	// TODO : 소분 참여 시 다음 조건 때 True로 변경해야함 => if( isFullMinimum == FALSE && 현재인원 >= 최소참여인원 )
+	// 소분 참여 시 if( isFullMinimum == FALSE && 현재인원 >= 최소참여인원 ) 만족 시 True로 변경
+	// todo: remainCount가 본질이 바뀌며 if(remainCount == 0)으로 바꿔도 되는듯
 	@Column(name = "is_full_minimum", nullable = false, columnDefinition = "TINYINT(1) DEFAULT false")
 	private Boolean isFullMinimum;
 
@@ -74,10 +75,12 @@ public class UserPostEntity extends BaseTimeEntity {
 	 */
 
 	// 1. 참여 가능 남은 인원수 업데이트
-	public UserPostEntity updateRemainCount(String type) {
-		if (type.equals(JOIN)) {
+	public UserPostEntity updateRemainCount(String type, Integer currentEngageCount, Integer minEngageCount) {
+		if (type.equals(JOIN) && this.getRemainCount() > 0) {
+			// 음수 방지 위해 remainCount가 1 이상일 때만 감소
 			this.remainCount--;
-		} else if (type.equals(CANCEL)) {
+		} else if (type.equals(CANCEL) && currentEngageCount <= minEngageCount) {
+			// 현재인원이 최소소분인원과 같거나 적을 때만 remainCount를 증가
 			this.remainCount++;
 		}
 		return this;

@@ -72,15 +72,15 @@ public class UserPostService {
 	// 2. 소분글 참여하기
 	public UserPostEntity joinPortioning(UserPostEntity userPost, Integer currentEngageCount, Integer minEngageCount) {
 		// 참여 가능 남은 인원수 업데이트
-		this.updateRemainCount(userPost, JOIN);
+		this.updateRemainCount(userPost, JOIN, currentEngageCount, minEngageCount);
 		// 최소 참여 인원 달성 여부 업데이트
 		return this.updateIsFullMinimum(userPost, currentEngageCount, minEngageCount);
 	}
 
 
 	// 3. 참여 가능 남은 인원수 업데이트
-	public UserPostEntity updateRemainCount(UserPostEntity userPost, String type) {
-		return userPost.updateRemainCount(type);
+	public UserPostEntity updateRemainCount(UserPostEntity userPost, String type, Integer currentEngageCount, Integer minEngageCount) {
+		return userPost.updateRemainCount(type, currentEngageCount, minEngageCount);
 	}
 
 
