@@ -24,7 +24,7 @@ public class PostDataInDto {
 
 	@NotNull
 	@Positive
-	private Integer amount;
+	private Double amount;
 
 	@NotNull
 	private Integer minEngageCount;

@@ -12,7 +12,7 @@ public class PostDataOutDto {
 
 	private String onlinePurchaseUrl;
 	private Integer originalPrice;
-	private Integer amount;
+	private Double amount;
 	private Integer minEngageCount;
 	private Integer maxEngageCount;
 	private Integer currentEngageCount;
