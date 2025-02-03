@@ -36,7 +36,7 @@ public class PostEntity {
 	private Integer originalPrice;
 
 	@Column(name = "amount", nullable = false)
-	private Integer amount;
+	private Double amount;
 
 	@Column(name = "min_engage_count", nullable = false, columnDefinition = "TINYINT")
 	private Integer minEngageCount;
