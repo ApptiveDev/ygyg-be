@@ -4,6 +4,7 @@ package foiegras.ygyg.post.application.service;
 import foiegras.ygyg.global.common.exception.BaseException;
 import foiegras.ygyg.global.common.response.BaseResponseStatus;
 import foiegras.ygyg.post.application.dto.post.in.*;
+import foiegras.ygyg.post.application.dto.post.out.CreatePostOutDto;
 import foiegras.ygyg.post.application.dto.post.out.GetPostOutDto;
 import foiegras.ygyg.post.application.dto.post.out.PostDataOutDto;
 import foiegras.ygyg.post.application.dto.userpost.in.UserPostDataInDto;
@@ -48,7 +49,7 @@ public class PostService {
 	 */
 
 	// 1. 소분글 생성
-	public void createPost(CreatePostInDto inDto) {
+	public CreatePostOutDto createPost(CreatePostInDto inDto) {
 		// 요청받은 각 카테고리, 소분단위 pk로 알맞는 엔티티 가져오기
 		SeasoningCategoryEntity categoryEntity = seasoningCategoryJpaRepository
 			.findById(inDto.getSeasoningCategoryId())
@@ -75,7 +76,7 @@ public class PostService {
 			.toBuilder()
 			.writerUuid(inDto.getWriterUuid())
 			.expectedMinimumPrice(inDto.getPostDataInDto().getOriginalPrice() / inDto.getPostDataInDto().getMaxEngageCount())
-			.remainCount(inDto.getPostDataInDto().getMaxEngageCount() - 1)
+			.remainCount(inDto.getPostDataInDto().getMinEngageCount() - 1)
 			.isFullMinimum(false)
 			.seasoningCategoryEntity(categoryEntity)
 			.postEntity(savedPost)
@@ -95,6 +96,10 @@ public class PostService {
 			.postEntity(savedPost)
 			.build();
 		itemImageUrlJpaRepository.save(imageUrlEntity);
+
+		return CreatePostOutDto.builder()
+			.userPostId(savedUserPost.getId())
+			.build();
 	}
 
 
@@ -149,12 +154,14 @@ public class PostService {
 		List<ItemImageUrlEntity> existingImageUrls = itemImageUrlJpaRepository.findByPostEntity(postEntity);
 
 		// userpost 수정값 영향받는 값들 최신화 및 수정본 저장
+		Integer remainCount = inDto.getPostDataInDto().getMinEngageCount() - postEntity.getCurrentEngageCount();
+		if (remainCount < 0) remainCount = 0; // 최소소분인원 변경으로 인해 remainCount가 음수가 될 경우 0으로 초기화
 		UserPostEntity updatedUserPostEntity = userPostEntity.toBuilder()
 			.postTitle(inDto.getUserPostDataInDto().getPostTitle())
 			.portioningDate(inDto.getUserPostDataInDto().getPortioningDate())
 			.seasoningCategoryEntity(seasoningCategoryEntity)
 			.expectedMinimumPrice(inDto.getPostDataInDto().getOriginalPrice() / inDto.getPostDataInDto().getMaxEngageCount())
-			.remainCount(inDto.getPostDataInDto().getMaxEngageCount() - postEntity.getCurrentEngageCount())
+			.remainCount(remainCount)
 			.build();
 		updatedUserPostEntity.updateIsFullMinimum(postEntity.getCurrentEngageCount(), inDto.getPostDataInDto().getMinEngageCount());
 		userPostJpaRepository.save(updatedUserPostEntity);
@@ -204,6 +211,17 @@ public class PostService {
 	// 5. 현재 참여인원 수정
 	public PostEntity updateCurrentEngageCount(PostEntity postEntity, String type) {
 		return postEntity.updateCurrentEngageCount(type);
+	}
+
+
+	// 6. 만료된 소분글 삭제
+	// todo: 메서드 분리
+	public void deleteExpiredPosts(UserPostEntity userPostEntity) {
+		PostEntity postEntity = userPostEntity.getPostEntity();
+		itemImageUrlJpaRepository.deleteByPostEntity(postEntity);
+		participatingUsersJpaRepository.deleteByUserPostEntity(userPostEntity);
+		userPostJpaRepository.delete(userPostEntity);
+		postJpaRepository.delete(postEntity);
 	}
 
 }

@@ -67,8 +67,9 @@ public class DeleteAccountEventHandler {
 	// 3. 참여중인 소분글 인원 업데이트
 	private void updateUserPost(List<UserPostEntity> notFinishedUserPost) {
 		for (UserPostEntity joinedUserPost : notFinishedUserPost) {
+			PostEntity post = joinedUserPost.getPostEntity();
 			// 참여 가능 남은 인원수 업데이트
-			userPostService.updateRemainCount(joinedUserPost, "cancel");
+			userPostService.updateRemainCount(joinedUserPost, "cancel", post.getCurrentEngageCount(), post.getMinEngageCount());
 			// 현재 참여 인원 업데이트
 			PostEntity joinedPost = postService.updateCurrentEngageCount(joinedUserPost.getPostEntity(), "cancel");
 			// 최소 참여 인원 달성 여부 업데이트

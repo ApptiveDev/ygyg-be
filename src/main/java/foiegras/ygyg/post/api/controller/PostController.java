@@ -5,11 +5,13 @@ import foiegras.ygyg.global.common.response.BaseResponse;
 import foiegras.ygyg.global.common.security.CustomUserDetails;
 import foiegras.ygyg.post.api.request.CreatePostRequest;
 import foiegras.ygyg.post.api.request.UpdatePostRequest;
+import foiegras.ygyg.post.api.response.CreatePostResponse;
 import foiegras.ygyg.post.api.response.GetPostResponse;
 import foiegras.ygyg.post.application.dto.post.in.CreatePostInDto;
 import foiegras.ygyg.post.application.dto.post.in.DeletePostInDto;
 import foiegras.ygyg.post.application.dto.post.in.GetPostInDto;
 import foiegras.ygyg.post.application.dto.post.in.UpdatePostInDto;
+import foiegras.ygyg.post.application.dto.post.out.CreatePostOutDto;
 import foiegras.ygyg.post.application.dto.post.out.GetPostOutDto;
 import foiegras.ygyg.post.application.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,10 +49,11 @@ public class PostController {
 	@Operation(summary = "소분글 생성", description = "소분글 생성", tags = { "Post" })
 	@PostMapping()
 	@SecurityRequirement(name = "Bearer Auth")
-	public BaseResponse<Void> createPost(@Valid @RequestBody CreatePostRequest request, @AuthenticationPrincipal CustomUserDetails authentication) {
+	public BaseResponse<CreatePostResponse> createPost(@Valid @RequestBody CreatePostRequest request, @AuthenticationPrincipal CustomUserDetails authentication) {
 		CreatePostInDto inDto = modelMapper.map(request, CreatePostInDto.class);
-		postService.createPost(inDto.toBuilder().writerUuid(authentication.getUserUuid()).build());
-		return new BaseResponse<>();
+		CreatePostOutDto outDto = postService.createPost(inDto.toBuilder().writerUuid(authentication.getUserUuid()).build());
+		CreatePostResponse response = modelMapper.map(outDto, CreatePostResponse.class);
+		return new BaseResponse<>(response);
 	}
 
 
