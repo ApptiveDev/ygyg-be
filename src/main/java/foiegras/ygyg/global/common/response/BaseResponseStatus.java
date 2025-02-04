@@ -31,6 +31,7 @@ public enum BaseResponseStatus {
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, 900, "Internal server error"),
 	INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, false, 901, "잘못된 입력값입니다. 다시 확인해주세요."),
 	LOGGING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, 903, "로그 기록 중 에러가 발생했습니다."),
+	SLACK_SEND_MESSAGE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, false, 904, "Slack 메시지 전송에 실패했습니다"),
 
 	/**
 	 * 2000: users service error

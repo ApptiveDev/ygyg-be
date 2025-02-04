@@ -66,6 +66,8 @@ dependencies {
     implementation 'commons-io:commons-io:2.14.0'
     // s3 presigned url을 위한 aws 의존성
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.0'
+    // slack
+    implementation 'com.slack.api:slack-api-client:1.30.0'
 }
 
 tasks.named('test') {
